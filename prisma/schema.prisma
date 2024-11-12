@@ -1,0 +1,42 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id             String     @id @default(uuid()) @map("_id") @db.ObjectId
+    username       String     @unique
+    name           String
+    email          String     @unique
+    bio            String?
+    profilePicture String?
+    socials        String[]
+    createdAt      DateTime   @default(now())
+    hashedPassword String
+    Question       Question[]
+    Answer         Answer[]
+}
+
+model Question {
+    id          String   @id @default(uuid()) @map("_id") @db.ObjectId
+    content     String
+    createdAt   DateTime @default(now())
+    isAnonymous Boolean
+    author      User?    @relation(fields: [authorId], references: [id])
+    authorId    String?  @map("_authorId") @db.ObjectId
+    Answer      Answer[]
+}
+
+model Answer {
+    id         String   @id @default(uuid()) @map("_id") @db.ObjectId
+    content    String
+    createdAt  DateTime @default(now())
+    author     User     @relation(fields: [authorId], references: [id])
+    authorId   String   @map("_authorId") @db.ObjectId
+    question   Question @relation(fields: [questionId], references: [id])
+    questionId String   @map("_questionId") @db.ObjectId
+}
