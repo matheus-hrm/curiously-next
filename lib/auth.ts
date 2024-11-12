@@ -44,21 +44,23 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         }
 
         const dbUser = await prisma.user.findFirst({
-          where: {
+          where: 
+          {
             username: credentials.username,
           },
         });
-
         if (!dbUser) {
+          console.log('no user');
           throw new InvalidLoginError();
         }
+
         const r = saltAndHashPassword(credentials.password as string);
+
         const isValid = verifyPassword(
           credentials.password as string,
           dbUser.hashedPassword,
           r.salt,
         );
-
         if (!isValid) {
           throw new InvalidLoginError();
         }

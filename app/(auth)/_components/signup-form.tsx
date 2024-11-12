@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+'use client';
 
 import { FormProvider, useForm } from 'react-hook-form';
 import {
@@ -13,11 +12,11 @@ import { Input } from '@/components/ui/input';
 
 import OAuthSignIn from './oauth-signin';
 import type { Inputs } from '../signup/actions';
-import { SignUpFormAction } from '../signup/actions';
+import { CreateUser } from '../signup/actions';
+import { useRouter } from 'next/router';
 
 export default function SignUpForm() {
-  const [error, setError] = useState<string | null>(null);
-
+  const router = useRouter();
   const form = useForm({
     defaultValues: {
       email: '',
@@ -26,19 +25,12 @@ export default function SignUpForm() {
     },
   });
   const handleSubmit = async (inputs: Inputs) => {
-    const user = await signIn('credentials', {
-      redirect: true,
-      username: inputs.username,
-      email: inputs.email,
-      password: inputs.password,
-    });
-
-    if (!user?.ok) {
-      setError(error);
-    }
-
-    if (user?.ok) {
-      SignUpFormAction(inputs);
+    const err: { error?: string | undefined, ok?: boolean } = await CreateUser(inputs);
+    if (err?.error) {
+      console.log(err.error);
+    } 
+    if (err?.ok) {
+      router.push('/');
     }
   };
 
@@ -85,7 +77,12 @@ export default function SignUpForm() {
               </FormItem>
             )}
           />
-          <button type="submit">Register</button>
+          <button
+            type="submit"
+            className="p-4 bg-blue-500 text-white rounded-lg"
+          >
+            Register
+          </button>
         </form>
       </FormProvider>
       <div className="flex flex-row">

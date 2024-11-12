@@ -1,4 +1,3 @@
-
 import * as crypto from 'crypto';
 
 export function saltAndHashPassword(password: string) {
