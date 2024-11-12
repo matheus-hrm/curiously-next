@@ -12,19 +12,27 @@ export const authSchema = z.object({
     .max(60, {
       message: 'Password must be less than 60 characters long',
     }),
-    email: z.string().email({
-        message: "Invalid email",
-    }),
+  email: z.string().email({
+    message: 'Invalid email',
+  }),
 });
 
 export const checkEmailSchema = z.object({
-    email: authSchema.shape.email,
+  email: authSchema.shape.email,
 });
 
-export const resetPasswordSchema = z.object({
-    password : authSchema.shape.password,
-    confirmPassword : authSchema.shape.password,
-}).refine((data) => data.password === data.confirmPassword, {
+export const resetPasswordSchema = z
+  .object({
+    password: authSchema.shape.password,
+    confirmPassword: authSchema.shape.password,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ["confirmPassword"],
+    path: ['confirmPassword'],
+  });
+
+export const signUpSchema = z.object({
+  email: authSchema.shape.email,
+  username: authSchema.shape.username,
+  password: authSchema.shape.password,
 });

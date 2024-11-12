@@ -1,29 +1,29 @@
-'use client'
+'use client';
 
-import { signIn } from "@/lib/auth"
-import { authSchema } from "@/lib/validations/auth"
-import { z } from "zod"
+import { signIn } from '@/lib/auth';
+import { authSchema } from '@/lib/validations/auth';
+import { z } from 'zod';
 
-export type Inputs = z.infer<typeof authSchema>
+export type Inputs = z.infer<typeof authSchema>;
 
 export async function signInWithGoogle() {
-    signIn('google')
+  signIn('google');
 }
 
 export async function signInWithDiscord() {
-    signIn('discord')
+  signIn('discord');
 }
 
 export async function signInForm(formData: Inputs) {
-    const validationResult = authSchema.safeParse(formData)
-    if (!validationResult.success) {
-        return validationResult.error
-    }
+  const validationResult = authSchema.safeParse(formData);
+  if (!validationResult.success) {
+    return validationResult.error;
+  }
 
-    const { username, password } = validationResult.data
+  const { username, password } = validationResult.data;
 
-    return signIn('credentials', {
-        username,
-        password,
-    })
+  return signIn('credentials', {
+    username,
+    password,
+  });
 }
