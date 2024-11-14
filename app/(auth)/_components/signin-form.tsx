@@ -65,7 +65,7 @@ export default function SignInForm() {
                             <FormItem>
                                 <FormLabel>password</FormLabel>
                                 <FormControl>
-                                    <Input {...field}></Input>
+                                    <Input type="password" {...field}></Input>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -84,7 +84,7 @@ export default function SignInForm() {
             </div>
             <div>
                 <p>Don't have an account ?</p>
-                <Link href={'/signUp'}>Sign Up</Link>
+                <Link href={'/signup'}>Sign Up</Link>
             </div>
         </>
     );

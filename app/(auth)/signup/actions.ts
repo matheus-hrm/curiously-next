@@ -1,7 +1,9 @@
+'use server'
+
 import * as z from 'zod';
 import { authSchema } from '@/lib/validations/auth';
 import { prisma } from '@/prisma/prisma';
-import { saltAndHashPassword } from '@/lib/jwt';
+import { hashPassword } from '@/lib/jwt';
 
 export type Inputs = z.infer<typeof authSchema>;
 
@@ -15,12 +17,8 @@ export async function CreateUser(FormData: Inputs) {
   const user = await prisma.user.findFirst({
     where: {
       OR: [
-        {
-          email: email,
-        },
-        {
-          username: username,
-        },
+        { email: email },
+        { username: username},
       ],
     },
   });
@@ -28,16 +26,20 @@ export async function CreateUser(FormData: Inputs) {
     return { error: 'User already exists' };
   }
 
-  const p = await saltAndHashPassword(password);
+  const passwordHash = await hashPassword(password);
   
-  prisma.user.create({
+  const newUser = await prisma.user.create({
     data: {
-      email: email,
+      id: undefined,
+      email,
       name: username,
-      username: username,
-      hashedPassword: p.hash as string,
+      username,
+      hashedPassword: passwordHash,
     },
   });
 
+  if (!newUser) {
+    return { error: 'Failed to create user' };
+  }
   return { ok: true };
 }

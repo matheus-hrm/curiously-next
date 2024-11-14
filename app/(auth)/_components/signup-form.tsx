@@ -13,7 +13,9 @@ import { Input } from '@/components/ui/input';
 import OAuthSignIn from './oauth-signin';
 import type { Inputs } from '../signup/actions';
 import { CreateUser } from '../signup/actions';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import { ZodError } from 'zod';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function SignUpForm() {
   const router = useRouter();
@@ -21,15 +23,17 @@ export default function SignUpForm() {
     defaultValues: {
       email: '',
       username: '',
-      password: '',
+      password: ''
     },
   });
   const handleSubmit = async (inputs: Inputs) => {
-    const err: { error?: string | undefined, ok?: boolean } = await CreateUser(inputs);
-    if (err?.error) {
+    const err:
+      | { error?: string | undefined; ok?: boolean }
+      | ZodError<{ email: string; username: string; password: string }> =
+      await CreateUser(inputs);
+    if ('error' in err) {
       console.log(err.error);
-    } 
-    if (err?.ok) {
+    } else if ('ok' in err) {
       router.push('/');
     }
   };
@@ -38,45 +42,49 @@ export default function SignUpForm() {
     <>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>email</FormLabel>
-                <FormControl>
-                  <Input {...field}></Input>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>username</FormLabel>
-                <FormControl>
-                  <Input {...field}></Input>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>password</FormLabel>
-                <FormControl>
-                  <Input {...field}></Input>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <Card className='w[500px]'>
+            <CardContent>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field}></Input>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>username</FormLabel>
+                  <FormControl>
+                    <Input type="text" {...field}></Input>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>password</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field}></Input>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            </CardContent>
+          </Card>
           <button
             type="submit"
             className="p-4 bg-blue-500 text-white rounded-lg"
