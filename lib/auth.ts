@@ -1,11 +1,9 @@
-import NextAuth, { CredentialsSignin, Account } from 'next-auth';
+import NextAuth, { CredentialsSignin, Account ,Profile} from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
 import Discord from 'next-auth/providers/discord';
 import { prisma } from '@/prisma/prisma';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { JWT } from 'next-auth/jwt';
-import { User } from 'next-auth';
 import { verifyPassword } from './jwt';
 
 class InvalidLoginError extends CredentialsSignin {
@@ -67,7 +65,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account, profile }: { token: JWT, user?: User, account?: Account | null, profile?: any }) {
+    async jwt({ token, user, account, profile }) {
       if (user) {
         token.id = user.id;
         token.username = (user as any).username;
@@ -80,30 +78,44 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
       return token;
     },
-  async signIn({ account, profile }: { account: Account | null; profile?: any }) {
+  async signIn({ account, profile }: { account?: Account | null; profile?: Profile }) {
     if (account?.provider == 'google' || account?.provider == 'discord') {
-      let userData = await prisma.user.findFirst({
-        where: {
-          OR: [
+      try {
+      const user = await prisma.user.findFirst({
+        where: 
             {
               email: profile?.email ?? undefined,
-              username: profile?.username as string,
             },
-          ],
-        },
-      });
-      if (!userData) {
-        userData = await prisma.user.create({
-          data: {
-            email: profile?.email,
-            username: profile?.username,
-            name: profile?.name ?? profile?.username,
-            hashedPassword: '',
-          },
-        });
+          });
+      if (!user) {
+        if (account?.provider == 'discord') {
+          await prisma.user.create({
+            data: {
+              email: profile?.email!,
+              username: String(profile?.username),
+              name: String(profile?.global_name),
+              hashedPassword: '',
+              profilePicture: String(profile?.image_url!),
+              accounts: {
+                create: {
+                  type: account.type,
+                  provider: account.provider,
+                  providerAccountId: account.providerAccountId,
+                  access_token: account.accessToken as string | undefined,
+                  refresh_token: account.refreshToken as string | undefined,
+                },
+              }
+            },
+          });
+        }
       }
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
     }
-    return true;
+  }
+  return true;
   },
   async session({ session, token }: { session: any; token: any }) {
     if (session.user) {
@@ -111,6 +123,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       session.user.username = token.username;
     } 
     return session;
+  },
+  async redirect({ url, baseUrl }: { url: string; baseUrl: string;  }) {
+    return url.startsWith(baseUrl) ? url : baseUrl; 
   },
   },
 });

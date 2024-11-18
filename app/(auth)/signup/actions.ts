@@ -43,3 +43,7 @@ export async function CreateUser(FormData: Inputs) {
   }
   return { ok: true };
 }
+
+export async function signUpFormAction(data: Inputs) {
+  return await CreateUser(data);
+}

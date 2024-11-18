@@ -6,7 +6,8 @@ import {
   CardContent,
   CardFooter,
 } from '@/components/ui/card';
-import { UserX, Link, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { UserX, ArrowLeft } from 'lucide-react';
 
 export default function UserNotFound() {
   return (
