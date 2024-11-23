@@ -1,23 +1,29 @@
-import { Button } from '@/components/ui/button';
+'use client';
+
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
-import { auth } from '@/lib/auth';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { User, UserPen } from 'lucide-react';
+import { User } from 'lucide-react';
 import SidebarSocialLinks from './sidebar-socials';
+import EditProfileButton from './edit-profile-button';
+import { Textarea } from '@/components/ui/textarea';
 
 type ProfileSidebarProps = {
   user: {
     name: string;
+    id: string;
     avatar: string;
     bio: string;
     socials: string[];
   };
+  isLogged: boolean;
+  onEditProfile: () => void;
 };
 
-export async function ProfileSidebar({ user }: ProfileSidebarProps) {
-  const session = await auth();
-  const isLogged = session?.user?.email;
-
+export function ProfileSidebar({
+  user,
+  isLogged,
+  onEditProfile,
+}: ProfileSidebarProps) {
   return (
     <div className="relative">
       <Card className="sticky top-8 backdrop-blur-lg bg-white/80 border-none shadow-lg">
@@ -37,21 +43,12 @@ export async function ProfileSidebar({ user }: ProfileSidebarProps) {
               </div>
             )}
             <h2 className="text-xl font-semibold mb-2">{user.name}</h2>
-            <Card className="flex flex-col w-full my-2">
-              <CardTitle className="text-sm font-semibold p-2 items-start"></CardTitle>
-              <CardContent className="flex items-center justify-center space-x-2">
-                <p className="text-sm text-gray-500 mb-4">{user.bio}</p>
-              </CardContent>
-            </Card>
-            <SidebarSocialLinks
-              props={Promise.resolve({ user: { socials: user.socials } })}
+            <Textarea
+              className="text-sm text-gray-500 mb-4 resize-none disabled"
+              defaultValue={user.bio}
             />
-            {isLogged && (
-              <Button variant="outline" className="w-full">
-                <p>Edit profile</p>
-                <UserPen className="ml-2 h-4 w-4" />
-              </Button>
-            )}
+            <SidebarSocialLinks props={{ socials: user.socials }} />
+            {isLogged && <EditProfileButton onEditProfile={onEditProfile} />}
           </div>
         </CardContent>
       </Card>

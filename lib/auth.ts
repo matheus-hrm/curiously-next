@@ -108,6 +108,27 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             },
           });
         }
+        if (account?.provider == 'google') {
+          console.log(profile);
+          await prisma.user.create({
+            data: {
+              email: profile?.email!,
+              username: String(profile?.name),
+              name: String(profile?.name),
+              hashedPassword: '',
+              profilePicture: String(profile?.picture),
+              accounts: {
+                create: {
+                  type: account.type,
+                  provider: account.provider,
+                  providerAccountId: account.providerAccountId,
+                  access_token: account.accessToken as string | undefined,
+                  refresh_token: account.refreshToken as string | undefined,
+                },
+              }
+            }
+          })
+        }
       }
       return true;
     } catch (error) {

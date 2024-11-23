@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ProfileSidebar } from '../_components/profile-sidebar';
+import { ProfileSidebar } from '../_components/_user-sidebar/profile-sidebar';
 import { getUser, getUserQuestions } from './actions';
 import UserNotFound from './_not-found';
 import MainPageSkeleton from './loading';
@@ -10,6 +10,7 @@ import FloatingCard from '../_components/floating-card';
 import LogoutButton from '../_components/logout-button';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
+import UserSidebar from '../_components/_user-sidebar/user-sidebar-client';
 
 export default async function UserPage({
   params,
@@ -20,9 +21,11 @@ export default async function UserPage({
   if (!user) {
     return <UserNotFound />;
   }
+
   const session = await auth();
   const loggedUser = session?.user;
   const questions = await getUserQuestions(user.id);
+
   return (
     <>
       <Suspense fallback={<MainPageSkeleton />}>
@@ -35,13 +38,15 @@ export default async function UserPage({
               </Link>
             </Button>
             <div className="grid gap-6 md:grid-cols-[300px_1fr]">
-              <ProfileSidebar
+              <UserSidebar
                 user={{
                   name: user.username,
+                  id: user.id,
                   avatar: user.profilePicture || '',
                   bio: user.bio || '',
                   socials: user.socials || [],
                 }}
+                isLogged={loggedUser?.id === user.id}
               />
               <QuestionFeed
                 questions={questions}
