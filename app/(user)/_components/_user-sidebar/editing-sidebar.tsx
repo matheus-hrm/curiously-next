@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/hooks/use-toast';
 import { CircleX, ImageUp, Link, LoaderCircle, Save } from 'lucide-react';
 import { useRef, useState } from 'react';
 
@@ -19,6 +20,9 @@ type EditingSidebarProps = {
   onClose: () => void;
 };
 
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
 export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
   const [imageHover, setImageHover] = useState(false);
   const [newName, setNewName] = useState(user.name);
@@ -26,9 +30,74 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
   const [uploadError, setUploadError] = useState<String | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [socials, setSocials] = useState(user.socials);
+  const [newSocial, setNewSocial] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleAddSocial = () => {
+    if (!newSocial) return;
+    try {
+      new URL(newSocial); // Validate URL
+      setSocials([...socials, newSocial]);
+      setNewSocial('');
+    } catch {
+      toast({
+        title: 'Invalid URL',
+        description: 'Please enter a valid URL',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleRemoveSocial = (index: number) => {
+    setSocials(socials.filter((_, i) => i !== index));
+  };
 
   const handleSwitchProfilePicture = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      if (fileInputRef.current?.files?.length) {
+        await handleImageChange({
+          target: { files: fileInputRef.current.files },
+        } as React.ChangeEvent<HTMLInputElement>);
+      }
+      setIsSaving(true);
+      const response = await fetch(`/api/${user.name}/update`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: newName,
+          bio: newBio,
+          socials,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
+      }
+
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      toast({
+        title: 'Profile updated',
+        description: 'Your profile has been updated successfully',
+      });
+      onClose();
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: 'An error occurred',
+        description: 'Failed to update profile',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleImageChange = async (
@@ -38,9 +107,6 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
     setUploadError(null);
 
     if (!file) return setUploadError('No file selected');
-
-    const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-    const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       return setUploadError('File type not allowed');
@@ -52,10 +118,10 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
 
     try {
       const formData = new FormData();
-      formData.append('avatar', file);
+      formData.append('file', file);
 
       setIsLoading(true);
-      const response = await fetch(`/api/${user.name}/avatar`, {
+      const response = await fetch(`/api/${user.name}/update/avatar`, {
         method: 'POST',
         body: formData,
       });
@@ -68,7 +134,7 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
       if (data.error) {
         throw new Error(data.error);
       }
-
+      console.log(data);
       onClose();
     } catch (error) {
       console.error(error);
@@ -118,6 +184,7 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
             )}
             <Input
               type="file"
+              accept={ALLOWED_IMAGE_TYPES.join(',')}
               ref={fileInputRef}
               onChange={handleImageChange}
             />
@@ -134,22 +201,25 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
               onChange={(e) => setNewBio(e.target.value)}
             />
           </div>
-          {user.socials.length > 0 &&
-            user.socials.map((url, i) => {
-              return (
-                <div key={url} className="flex flex-col w-full p-2">
-                  <div className="flex flex-row max-h-5 justify-start items-center">
-                    <Link key={i} className="w-4 h-4 mr-2" />
-                    <Input
-                      key={url}
-                      defaultValue={url}
-                      placeholder={url}
-                      className="w-full text-sm font-extralight pl-4"
-                    />
+          {
+            //FIXME: Add socials to the db and update the state
+            user.socials.length > 0 &&
+              user.socials.map((url, i) => {
+                return (
+                  <div key={url} className="flex flex-col w-full p-2">
+                    <div className="flex flex-row max-h-5 justify-start items-center">
+                      <Link key={i} className="w-4 h-4 mr-2" />
+                      <Input
+                        key={url}
+                        defaultValue={url}
+                        placeholder={url}
+                        className="w-full text-sm font-extralight pl-4"
+                      />
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+          }
           <div className="flex flex-col w-full p-2">
             <div className="flex flex-row max-h-5 justify-start items-center">
               <Link className="w-4 h-4 mr-2" />
@@ -164,6 +234,7 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
               <Button
                 className="bg-green-500 w-full flex flex-row items-center justify-center"
                 variant="default"
+                onClick={handleUpdateProfile}
               >
                 <Save className="mr-2 h-4 w-4" />
                 <p>Save</p>

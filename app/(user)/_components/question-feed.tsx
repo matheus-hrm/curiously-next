@@ -114,6 +114,7 @@ const getSenderData = async (question: Question) => {
 const IsProfileOwner = async (username: string) => {
   const session = await auth();
   const loggedUser = session?.user as UserType;
-  if (!loggedUser) return false;
-  return loggedUser.username === username;
+  const dbUser = await getUser(username);
+  if (!loggedUser || !dbUser) return false;
+  return loggedUser.id === dbUser.id;
 };

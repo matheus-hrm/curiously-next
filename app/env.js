@@ -4,7 +4,8 @@ import { z } from 'zod'
 export const env = createEnv({
 
     server: {
-        MONGO_DB_URI: z.string().min(1)
+        MONGO_DB_URI: z.string().min(1),
+        DISCORD_WEBHOOK_URL: z.string().min(1)
     },
     client: {
 
