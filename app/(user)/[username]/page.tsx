@@ -1,8 +1,7 @@
 import { Suspense } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ProfileSidebar } from '../_components/_user-sidebar/profile-sidebar';
-import { getUser, getUserQuestions } from './actions';
+import { getAllAnswers, getUser, getUserQuestions } from './actions';
 import UserNotFound from './_not-found';
 import MainPageSkeleton from './loading';
 import QuestionFeed from '../_components/question-feed';
@@ -25,6 +24,7 @@ export default async function UserPage({
   const session = await auth();
   const loggedUser = session?.user;
   const questions = await getUserQuestions(user.id);
+  const answers = await getAllAnswers(user.id);
 
   return (
     <>
@@ -54,7 +54,13 @@ export default async function UserPage({
                   username: user.username,
                   avatar: user.profilePicture || '',
                 }}
-                answers={[]}
+                answers={answers.map((answer) => ({
+                  id: answer.id,
+                  content: answer.content,
+                  questionId: answer.questionId,
+                  userName: answer.user.name,
+                  userProfilePicture: answer.user.profilePicture,
+                }))}
               />
 
               {loggedUser ? (
