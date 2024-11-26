@@ -45,3 +45,11 @@ export async function getUserQuestions(userId: string) {
     },
   });
 }
+
+export async function getUserById(id: string) {
+  return await prisma.user.findFirst({
+    where: {
+      id: id,
+    },
+  });
+}

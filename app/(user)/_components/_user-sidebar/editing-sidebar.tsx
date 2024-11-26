@@ -6,7 +6,15 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
-import { CircleX, ImageUp, Link, LoaderCircle, Save } from 'lucide-react';
+import {
+  Check,
+  CircleMinus,
+  CircleX,
+  ImageUp,
+  Link,
+  LoaderCircle,
+  Save,
+} from 'lucide-react';
 import { useRef, useState } from 'react';
 
 type EditingSidebarProps = {
@@ -33,11 +41,12 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
   const [socials, setSocials] = useState(user.socials);
   const [newSocial, setNewSocial] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleAddSocial = () => {
     if (!newSocial) return;
     try {
-      new URL(newSocial); // Validate URL
+      new URL(newSocial);
       setSocials([...socials, newSocial]);
       setNewSocial('');
     } catch {
@@ -53,17 +62,19 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
     setSocials(socials.filter((_, i) => i !== index));
   };
 
-  const handleSwitchProfilePicture = () => {
-    fileInputRef.current?.click();
-  };
-
   const handleUpdateProfile = async () => {
     try {
-      if (fileInputRef.current?.files?.length) {
-        await handleImageChange({
-          target: { files: fileInputRef.current.files },
-        } as React.ChangeEvent<HTMLInputElement>);
+      if (selectedFile) {
+        await handleImageUpload();
+        if (uploadError) {
+          toast({
+            title: 'An error occurred',
+            description: uploadError,
+            variant: 'destructive',
+          });
+        }
       }
+
       setIsSaving(true);
       const response = await fetch(`/api/${user.name}/update`, {
         method: 'PUT',
@@ -76,6 +87,7 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
           socials,
         }),
       });
+
       if (!response.ok) {
         throw new Error('Failed to update profile');
       }
@@ -92,11 +104,14 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
       onClose();
     } catch (error) {
       console.log(error);
+      setUploadError('An error occurred');
       toast({
         title: 'An error occurred',
         description: 'Failed to update profile',
         variant: 'destructive',
       });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -116,9 +131,15 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
       return setUploadError('File is too big');
     }
 
+    setSelectedFile(file);
+  };
+
+  const handleImageUpload = async () => {
+    if (!selectedFile) return;
+
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', selectedFile);
 
       setIsLoading(true);
       const response = await fetch(`/api/${user.name}/update/avatar`, {
@@ -134,14 +155,26 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
       if (data.error) {
         throw new Error(data.error);
       }
-      console.log(data);
-      onClose();
+
+      toast({
+        title: 'Profile picture updated',
+        description: 'Your profile picture has been updated successfully',
+      });
+
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error) {
       console.error(error);
       setUploadError('An error occurred');
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      toast({
+        title: 'An error occurred',
+        description: 'Failed to upload image',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -164,10 +197,16 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
                   {imageHover && (
                     <Button
                       variant="outline"
-                      onClick={handleSwitchProfilePicture}
-                      className="absolute inset-0 flex items-center justify-center bg-black/50 text-white"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="absolute h-32 inset-0 flex items-center justify-center bg-black/30 transition-all duration-400 hover:bg-black/60 border-0 hover:text-white"
                     >
                       <ImageUp className="h-8 w-8" aria-hidden="true" />
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        className="hidden"
+                        onChange={handleImageChange}
+                      />
                     </Button>
                   )}
                 </Avatar>
@@ -182,12 +221,6 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
                 </div>
               </>
             )}
-            <Input
-              type="file"
-              accept={ALLOWED_IMAGE_TYPES.join(',')}
-              ref={fileInputRef}
-              onChange={handleImageChange}
-            />
           </div>
           <Input
             defaultValue={newName}
@@ -201,34 +234,46 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
               onChange={(e) => setNewBio(e.target.value)}
             />
           </div>
-          {
-            //FIXME: Add socials to the db and update the state
-            user.socials.length > 0 &&
-              user.socials.map((url, i) => {
-                return (
-                  <div key={url} className="flex flex-col w-full p-2">
-                    <div className="flex flex-row max-h-5 justify-start items-center">
-                      <Link key={i} className="w-4 h-4 mr-2" />
-                      <Input
-                        key={url}
-                        defaultValue={url}
-                        placeholder={url}
-                        className="w-full text-sm font-extralight pl-4"
-                      />
-                    </div>
-                  </div>
-                );
-              })
-          }
-          <div className="flex flex-col w-full p-2">
-            <div className="flex flex-row max-h-5 justify-start items-center">
-              <Link className="w-4 h-4 mr-2" />
+          {socials.slice(0, 7).map((url, index) => (
+            <div
+              key={`${url}-${index}`}
+              className="flex flex-row items-center space-x-2 p-2"
+            >
+              <Link className="w-4 h-4" />
               <Input
-                placeholder="Add a new link"
-                className="w-full text-sm font-extralight pl-4"
+                value={url}
+                onChange={(e) => {
+                  const newSocials = [...socials];
+                  newSocials[index] = e.target.value;
+                  setSocials(newSocials);
+                }}
+                className="flex-grow text-sm font-extralight"
+                placeholder="https://..."
               />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleRemoveSocial(index)}
+              >
+                <CircleMinus className="h-4 w-4" />
+              </Button>
             </div>
-          </div>
+          ))}
+          {socials.length < 7 && (
+            <div className="flex flex-row items-center space-x-2 p-2">
+              <Link className="w-4 h-4" />
+              <Input
+                value={newSocial}
+                onChange={(e) => setNewSocial(e.target.value)}
+                className="flex-grow text-sm font-extralight"
+                placeholder="Add new social link..."
+              />
+              <Button variant="ghost" size="icon" onClick={handleAddSocial}>
+                <Check className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+
           {!isLoading ? (
             <>
               <Button

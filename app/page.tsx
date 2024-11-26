@@ -2,11 +2,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { auth } from '@/lib/auth';
 import Link from 'next/link';
+import { getUserById } from './(user)/[username]/actions';
 
 async function Home() {
-  const session = await auth();
-  const user = session?.user;
-
+  const user = await getUserPage();
   return (
     <div className="flex justify-center items-center">
       <Card className="p-4 flex justify-center  m-5 text-lg">
@@ -35,3 +34,11 @@ async function Home() {
 export default function HomePage() {
   return <Home />;
 }
+
+const getUserPage = async () => {
+  const session = await auth();
+  const id = session?.user?.id;
+  if (!id) return null;
+  const user = getUserById(id);
+  return user;
+};
