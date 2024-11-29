@@ -37,7 +37,6 @@ export default async function QuestionFeed({
   answers,
 }: QuestionFeedProps) {
   const owner = await IsProfileOwner(user.username);
-  console.log(answers);
   const joinSenderToQuestion = async (question: Question) => {
     const sender = await getSenderData(question);
     return {

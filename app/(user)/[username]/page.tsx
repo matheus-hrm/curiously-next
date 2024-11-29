@@ -25,7 +25,7 @@ export default async function UserPage({
   const loggedUser = session?.user;
   const questions = await getUserQuestions(user.id);
   const answers = await getAllAnswers(user.id);
-
+  console.log(user);
   return (
     <>
       <Suspense fallback={<MainPageSkeleton />}>
