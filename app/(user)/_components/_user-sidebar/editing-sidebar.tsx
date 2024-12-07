@@ -43,9 +43,6 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  console.log(fileInputRef);
-  console.log(selectedFile);
-
   const handleSwitchProfilePicture = () => {
     fileInputRef.current?.click();
   };
@@ -158,8 +155,8 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
       }
 
       toast({
-        title: 'Profile picture updated',
-        description: 'Your profile picture has been updated successfully',
+        title: 'Foto de perfil atualizada',
+        description: 'Sua foto de perfil foi atualizada com sucesso',
       });
 
       setSelectedFile(null);
@@ -170,8 +167,8 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
       console.error(error);
       setUploadError('An error occurred');
       toast({
-        title: 'An error occurred',
-        description: 'Failed to upload image',
+        title: 'Ocorreu um erro',
+        description: 'Falha ao carregar a imagem',
         variant: 'destructive',
       });
     } finally {
@@ -270,7 +267,7 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
                 value={newSocial}
                 onChange={(e) => setNewSocial(e.target.value)}
                 className="flex-grow text-sm font-extralight"
-                placeholder="Add new social link..."
+                placeholder="Adicionar novo link..."
               />
               <Button variant="ghost" size="icon" onClick={handleAddSocial}>
                 <Check className="h-4 w-4" />
@@ -279,27 +276,27 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
           )}
 
           {!isLoading ? (
-            <>
+            <div className="flex flex-row justify-evenly space-x-5 text-white/90">
               <Button
-                className="bg-green-500 w-full flex flex-row items-center justify-center"
+                className="bg-green-800 flex flex-row items-center justify-center"
                 variant="default"
                 onClick={handleUpdateProfile}
               >
-                <Save className="mr-2 h-4 w-4" />
-                <p>Save</p>
+                <Save className="mr-1 h-4 w-4" />
+                <p className="text-sm mr-3">Salvar</p>
               </Button>
               <Button
-                className="bg-red-500 w-full flex flex-row items-center justify-center"
+                className="bg-red-800 hover:bg-red-950 flex flex-row items-center justify-center"
                 variant="default"
                 onClick={onClose}
               >
-                <CircleX className="mr-2 h-4 w-4" />
-                <p>Cancel</p>
+                <CircleX className="mr-1 h-4 w-4" />
+                <p className="text-sm">Cancelar</p>
               </Button>
-            </>
+            </div>
           ) : (
             <Button
-              className="bg-zinc-600 w-full flex flex-row items-center justify-center disabled"
+              className="bg-zinc-600 flex flex-row items-center justify-center disabled"
               variant="default"
             >
               <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />

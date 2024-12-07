@@ -32,10 +32,10 @@ export default async function UserPage({
       <Suspense fallback={<MainPageSkeleton />}>
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
           <div className="mx-auto max-w-7xl px-4 py-8">
-            <Button variant="ghost" className="mb-6">
+            <Button variant="ghost" className="mb-6 hover:bg-black/20">
               <Link href={'/'} className="flex flex-row items-center">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
+                Voltar
               </Link>
             </Button>
             <div className="grid gap-6 md:grid-cols-[300px_1fr]">

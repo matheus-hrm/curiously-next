@@ -1,9 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { ProfileSidebar } from './profile-sidebar';
-import EditProfileButton from './edit-profile-button';
 import EditingSidebar from './editing-sidebar';
 
 type UserSidebarClientProps = {

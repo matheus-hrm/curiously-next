@@ -48,7 +48,7 @@ export default function ReplyQuestion({ question }: QuestionProp) {
       <Dialog>
         <DialogTrigger asChild>
           <Button
-            className="bg-black text-white border-white border-2 hover:bg-black/70 hover:text-white"
+            className="bg-black/70 text-white border-white border-2 hover:bg-black/50 hover:text-white"
             variant="outline"
             onClick={() => setReplying(!replying)}
           >
@@ -73,7 +73,7 @@ export default function ReplyQuestion({ question }: QuestionProp) {
           </DialogHeader>
           <Input
             className="w-full"
-            placeholder="Your reply"
+            placeholder="Responder"
             value={reply}
             onChange={(e) => setReply(e.target.value)}
           />

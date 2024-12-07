@@ -14,7 +14,7 @@ export default function LogoutButton() {
         }}
         variant="outline"
       >
-        <p className=" text-md font-semibold">Logout</p>
+        <p className=" text-md font-semibold">Sair</p>
         <LogOut className="w-12 mr-2 size-14" aria-hidden="true" />
       </Button>
     </>

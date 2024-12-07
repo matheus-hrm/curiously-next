@@ -31,36 +31,41 @@ export default function FloatingCard({
   const senderId = loggedUserId ? loggedUserId : null;
 
   const handleSendQuestion = async (content: string, isAnonymous: boolean) => {
-    if (!content) {
+    if (!content.trim()) {
       setError(true);
-      setTimeout(() => {
-        setError(false);
-      }, 2000);
+      setTimeout(() => setError(false), 2000);
       return;
     }
-    if (!isAnonymous) {
-      if (!senderId) {
-        setError(true);
-        toast({
-          title: 'Error',
-          description: 'You must be logged in to send a question',
-          variant: 'destructive',
-        });
-        setTimeout(() => {
-          setLoading(false);
-        }, 200);
-      } else {
-        await SendQuestion(content, senderId, receiverId, isAnonymous);
-      }
+
+    try {
+      setLoading(true);
+      await SendQuestion(
+        content,
+        isAnonymous ? null : senderId,
+        receiverId,
+        isAnonymous,
+      );
+      setQuestion('');
+      toast({
+        title: 'Success',
+        description: 'Question sent successfully',
+      });
+    } catch (error) {
+      setError(true);
+      toast({
+        title: 'Error',
+        description:
+          error instanceof Error ? error.message : 'Failed to send question',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
     }
-    await SendQuestion(content, null, receiverId, isAnonymous);
-    setLoading(true);
-    setQuestion('');
   };
 
   return (
     <div
-      className={`fixed bottom-8 left-1/3 focus-within:left-1/4 w-full max-w-3xl focus-within:max-w-screen-lg px-4  transition-all duration-300 ease-in-out  ${
+      className={`fixed bottom-8  md:left-1/3 lg:left-1/3 lg:focus-within:left-1/4 w-full max-w-md md:max-w-xl lg:max-w-3xl lg:focus-within:max-w-screen-lg px-4 transition-all duration-300 ease-in-out ${
         error ? 'animate-shake' : ''
       }`}
       style={{ position: 'fixed' }}
@@ -68,7 +73,9 @@ export default function FloatingCard({
       <Card className="backdrop-blur-lg bg-white/90 border-none shadow-lg">
         <CardContent className="p-4 flex flex-row items-center justify-center">
           <Input
-            placeholder={error ? 'Message cannot be empty' : 'Ask something...'}
+            placeholder={
+              error ? 'Mensagem não pode ser vazia' : 'Pergunte algo...'
+            }
             className="w-full bg-transparent border-none shadow-none focus-visible:ring-0 text-lg"
             type="text"
             value={question}
@@ -96,7 +103,7 @@ export default function FloatingCard({
                 </Label>
               </TooltipTrigger>
               <TooltipContent>
-                <p className="text-xs">Toggle anonymous</p>
+                <p className="">Mandar como anônimo</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

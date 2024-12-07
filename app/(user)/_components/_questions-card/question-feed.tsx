@@ -1,5 +1,4 @@
 import { Card, CardContent } from '@/components/ui/card';
-import AnswerCard from './answer-card';
 import { getUser, getUserById } from '../../[username]/actions';
 import { auth } from '@/lib/auth';
 import { User as UserType } from '@/app/types/user';
@@ -64,7 +63,7 @@ export default async function QuestionFeed({
                 (answer) => answer.questionId === question.id,
               );
               return (
-                <div key={question.id} className="mb-8 last:mb-0">
+                <div key={question.id} className="mb-6 last:mb-0">
                   <QuestionCard
                     question={question}
                     answerCount={questionAnswers.length}
@@ -73,7 +72,7 @@ export default async function QuestionFeed({
                   />
 
                   <div className="inset-0 flex items-center">
-                    <span className="w-full border-t mt-4" />
+                    <span className="w-full border-t mt-2 mr-2" />
                   </div>
                 </div>
               );

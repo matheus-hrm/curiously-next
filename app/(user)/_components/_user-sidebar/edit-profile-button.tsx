@@ -10,8 +10,12 @@ export default function EditProfileButton({
 }) {
   return (
     <>
-      <Button variant="outline" className="w-full" onClick={onEditProfile}>
-        <p>Edit profile</p>
+      <Button
+        variant="outline"
+        className="w-full hover:bg-black/20"
+        onClick={onEditProfile}
+      >
+        <p>Editar perfil</p>
         <UserPen className="ml-2 h-4 w-4" />
       </Button>
     </>

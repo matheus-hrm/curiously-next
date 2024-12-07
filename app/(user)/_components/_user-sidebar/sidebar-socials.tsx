@@ -36,14 +36,14 @@ export default function SidebarSocialLinks({
         icons.map(({ url, type }, i) => {
           const Icon = type !== 'Unknown' ? SVGIcons[type] : LinkIcon;
           return (
-            <div key={url} className="flex flex-col w-full p-2">
+            <div key={url} className="flex flex-col w-full p-2 ">
               <Link
                 key={url}
                 href={url}
-                className="flex-row flex max-h-5 justify-start"
+                className="flex-row flex max-h-5 justify-start "
               >
                 <Icon key={i} className="w-5 h-5" />
-                <div className="font-extralight text-sm pl-2">
+                <div className="font-extralight text-sm pl-2 hover:underline">
                   <p>
                     {url.includes('.com/')
                       ? url.split('.com/')[1]

@@ -18,8 +18,8 @@ export default function AnswerCard({ answer }: AnswerCardProps) {
           <AvatarImage src={answer.profilePicture} alt={answer.username} />
         </Avatar>
         <div className="flex flex-col justify-center items-start ml-2">
-          <h4 className="font-semibold mb-1">{answer.username}</h4>
-          <p className="text-gray-600">{answer.content}</p>
+          <h4 className="font-extralight text-black/70">{answer.username}</h4>
+          <p className="font-semibold text-black/90">{answer.content}</p>
         </div>
       </div>
     </div>

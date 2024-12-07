@@ -5,7 +5,6 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { User } from 'lucide-react';
 import SidebarSocialLinks from './sidebar-socials';
 import EditProfileButton from './edit-profile-button';
-import { Textarea } from '@/components/ui/textarea';
 
 type ProfileSidebarProps = {
   user: {
@@ -43,10 +42,9 @@ export function ProfileSidebar({
               </div>
             )}
             <h2 className="text-xl font-semibold mb-2">{user.name}</h2>
-            <Textarea
-              className="text-sm text-gray-500 mb-4 resize-none disabled"
-              defaultValue={user.bio}
-            />
+            <p className="text-sm text-gray-500 mb-4 resize-none disabled border-2 rounded-lg border-gray-200 w-full p-5 ">
+              {user.bio}
+            </p>
             <SidebarSocialLinks props={{ socials: user.socials }} />
             {isLogged && <EditProfileButton onEditProfile={onEditProfile} />}
           </div>

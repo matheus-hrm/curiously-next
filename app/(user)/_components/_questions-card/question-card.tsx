@@ -2,6 +2,7 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { User } from 'lucide-react';
 import Link from 'next/link';
 import AnswersWrapper from './answer-wrapper';
+import ReplyQuestion from './reply-question';
 
 type QuestionCardProps = {
   question: {
@@ -34,7 +35,6 @@ export default function QuestionCard({
   answers,
 }: QuestionCardProps) {
   const isAnonymous = !question.sender || question.isAnonymous;
-
   return (
     <div className="flex items-start gap-4 mb-2">
       <Avatar>
@@ -61,13 +61,15 @@ export default function QuestionCard({
         )}
         <p className="text-black/90 font-semibold">{question.content}</p>
         <div className="flex flex-row items-center justify-start gap-4">
-          {answerCount > 0 && (
+          {answerCount > 0 ? (
             <AnswersWrapper
               answers={answers}
               count={answerCount}
               question={question}
               canReply={canReply}
             />
+          ) : (
+            canReply && <ReplyQuestion question={question} />
           )}
         </div>
       </div>
