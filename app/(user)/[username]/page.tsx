@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { getAllAnswers, getUser, getUserQuestions } from './actions';
 import UserNotFound from './_not-found';
 import MainPageSkeleton from './loading';
-import QuestionFeed from '../_components/question-feed';
+import QuestionFeed from '../_components/_questions-card/question-feed';
 import FloatingCard from '../_components/floating-card';
 import LogoutButton from '../_components/logout-button';
 import Link from 'next/link';
@@ -26,6 +26,7 @@ export default async function UserPage({
   const questions = await getUserQuestions(user.id);
   const answers = await getAllAnswers(user.id);
   console.log(user);
+
   return (
     <>
       <Suspense fallback={<MainPageSkeleton />}>
@@ -58,8 +59,8 @@ export default async function UserPage({
                   id: answer.id,
                   content: answer.content,
                   questionId: answer.questionId,
-                  userName: answer.user.name,
-                  userProfilePicture: answer.user.profilePicture,
+                  username: answer.user.name,
+                  profilePicture: answer.user.profilePicture,
                 }))}
               />
 

@@ -9,10 +9,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Textarea } from '@/components/ui/textarea';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, SeparatorHorizontal } from 'lucide-react';
 import { useState } from 'react';
-import { replyQuestion } from '../[username]/actions';
+import { replyQuestion } from '../../[username]/actions';
+import { Input } from '@/components/ui/input';
 
 type QuestionProp = {
   question: {
@@ -47,7 +47,11 @@ export default function ReplyQuestion({ question }: QuestionProp) {
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline" onClick={() => setReplying(!replying)}>
+          <Button
+            className="bg-black text-white border-white border-2 hover:bg-black/70 hover:text-white"
+            variant="outline"
+            onClick={() => setReplying(!replying)}
+          >
             <MessageCircle className="mr-1 h-4 w-4" />
             Reply
           </Button>
@@ -62,15 +66,14 @@ export default function ReplyQuestion({ question }: QuestionProp) {
                 </Avatar>
                 <p className="text-lg px-4">{question.sender?.name}</p>
               </div>
-              <Textarea
-                className="text-xl resize-none mt-4 px-4"
-                disabled
-                value={question.content}
-              />
+              <p className="text-xl mt-4 p-4 text-black border-t-2 border-gray-300 w-full">
+                {question.content}
+              </p>
             </div>
           </DialogHeader>
-          <Textarea
-            className="resize-none"
+          <Input
+            className="w-full"
+            placeholder="Your reply"
             value={reply}
             onChange={(e) => setReply(e.target.value)}
           />

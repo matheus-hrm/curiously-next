@@ -1,9 +1,11 @@
 import { prisma } from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { v2 as cloudinary } from 'cloudinary'
 
-const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
-if (!webhookUrl) {
-    throw new Error('Discord webhook URL not provided');
+
+type CloudinaryResponse = {
+    url: string;
+    [key: string]: any;
 }
 
 export async function POST(
@@ -11,7 +13,13 @@ export async function POST(
     { params }: { params: Promise<{ username: string }> }
 ) {
     try {
-        
+        cloudinary.config({
+            cloud_name: process.env.CLOUDINARY_NAME,
+            api_key: process.env.CLOUDINARY_API_KEY,
+            api_secret: process.env.CLOUDINARY_API_SECRET
+        })
+
+
         const fileData = await req.formData();
         const file = fileData.get('file') as File;
         const username = (await params).username;
@@ -20,37 +28,40 @@ export async function POST(
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
-        const blob = new Blob([buffer], { type: file.type });
-        const form = new FormData();
-        form.append('file', blob, file.name);
-
-        const response = await fetch(webhookUrl!, {
-            method: 'POST',
-            body: form,
-        })
-
-        if (!response.ok) {
+        const response = await new Promise<CloudinaryResponse>(
+            (resolve,reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+                    {
+                        folder: 'curiously-profilePictures',
+                        resource_type: 'image',
+                        transformation: { width: 200, height: 200, crop: 'fill'}
+                    },
+                    (error, result) => {
+                        if (result) resolve(result as CloudinaryResponse | any);
+                        else reject(error);
+                        }
+                );
+                stream.end(buffer);
+            }
+        );
+        if (!response) {
             throw new Error('Failed to upload image');
         }
 
-        const data = await response.json();
-        const imageUrl = data.attachments[0].url;
-        
-        const success = await prisma.user.update({
-            where: {
-                username: username 
-            },
-            data: {
-                profilePicture: imageUrl
-            }
+        const user = await prisma.user.findUnique({
+            where: { username }
         });
-        if (!success) {
-            throw new Error('Failed to update profile picture');
-        }
+        user && await prisma.user.update({
+            where: { username },
+            data: { profilePicture: response.url }
+        });
 
-        return NextResponse.json(
-            { status: 200 }
-        );
+
+        return NextResponse.json({ 
+            status: 200,
+            message: "Image uploaded successfully",
+        }
+        )
     } catch (error) {
         console.error('Error uploading image', error);
         return NextResponse.json(

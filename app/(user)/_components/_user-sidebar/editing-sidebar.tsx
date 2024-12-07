@@ -43,6 +43,13 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  console.log(fileInputRef);
+  console.log(selectedFile);
+
+  const handleSwitchProfilePicture = () => {
+    fileInputRef.current?.click();
+  };
+
   const handleAddSocial = () => {
     if (!newSocial) return;
     try {
@@ -64,18 +71,11 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
 
   const handleUpdateProfile = async () => {
     try {
-      if (selectedFile) {
+      setIsSaving(true);
+      if (fileInputRef.current?.files?.length) {
         await handleImageUpload();
-        if (uploadError) {
-          toast({
-            title: 'An error occurred',
-            description: uploadError,
-            variant: 'destructive',
-          });
-        }
       }
 
-      setIsSaving(true);
       const response = await fetch(`/api/${user.name}/update`, {
         method: 'PUT',
         headers: {
@@ -112,6 +112,7 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
       });
     } finally {
       setIsSaving(false);
+      setIsLoading(false);
     }
   };
 
@@ -177,12 +178,13 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
       setIsLoading(false);
     }
   };
+
   return (
     <div className="relative">
       <Card className="sticky top-8 backdrop-blur-lg bg-white/80 border-none shadow-lg">
         <CardContent className="p-6 space-y-3">
           <div className="flex flex-col justify-center items-center text-center ">
-            {user.avatar ? (
+            {user.avatar && (
               <>
                 <Avatar
                   className="h-32 w-32 mb-4"
@@ -201,17 +203,12 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
                       className="absolute h-32 inset-0 flex items-center justify-center bg-black/30 transition-all duration-400 hover:bg-black/60 border-0 hover:text-white"
                     >
                       <ImageUp className="h-8 w-8" aria-hidden="true" />
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        className="hidden"
-                        onChange={handleImageChange}
-                      />
                     </Button>
                   )}
                 </Avatar>
               </>
-            ) : (
+            )}
+            {!user.avatar && (
               <>
                 <div className="h-full w-full flex items-center justify-center rounded-full border-2 border-zinc-300">
                   <ImageUp
@@ -221,6 +218,13 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
                 </div>
               </>
             )}
+            <Input
+              type="file"
+              ref={fileInputRef}
+              accept={ALLOWED_IMAGE_TYPES.join(',')}
+              className="hidden"
+              onChange={handleImageChange}
+            ></Input>
           </div>
           <Input
             defaultValue={newName}
