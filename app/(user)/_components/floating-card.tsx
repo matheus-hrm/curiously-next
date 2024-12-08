@@ -65,7 +65,7 @@ export default function FloatingCard({
 
   return (
     <div
-      className={`fixed bottom-8  md:left-1/3 lg:left-1/3 lg:focus-within:left-1/4 w-full max-w-md md:max-w-xl lg:max-w-3xl lg:focus-within:max-w-screen-lg px-4 transition-all duration-300 ease-in-out ${
+      className={`fixed bottom-8  md:left-1/3 lg:left-1/3  w-full max-w-md md:max-w-xl lg:max-w-3xl  px-4 transition-all duration-300 ease-in-out ${
         error ? 'animate-shake' : ''
       }`}
       style={{ position: 'fixed' }}

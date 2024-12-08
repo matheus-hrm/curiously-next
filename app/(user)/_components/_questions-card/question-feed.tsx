@@ -70,10 +70,6 @@ export default async function QuestionFeed({
                     canReply={owner}
                     answers={questionAnswers}
                   />
-
-                  <div className="inset-0 flex items-center">
-                    <span className="w-full border-t mt-2 mr-2" />
-                  </div>
                 </div>
               );
             })}

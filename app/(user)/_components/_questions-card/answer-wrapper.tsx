@@ -34,7 +34,7 @@ export default function AnswersWrapper({
 
   return (
     <div>
-      <div className="flex flex-row justify-center items-center gap-4 mb-1">
+      <div className="flex flex-row justify-start items-center gap-4 mb-1">
         <HideAnswersButton
           count={count}
           onToggleAnswers={handleToggleAnswers}
