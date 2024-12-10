@@ -1,26 +1,32 @@
 'use client';
 
-import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { User } from 'lucide-react';
 import SidebarSocialLinks from './sidebar-socials';
 import EditProfileButton from './edit-profile-button';
+import FollowButton from './follow-button';
 
 type ProfileSidebarProps = {
   user: {
     name: string;
+    username: string;
     id: string;
     avatar: string;
     bio: string;
     socials: string[];
+    following: string[];
+    followers: string[];
   };
   isLogged: boolean;
+  loggedUserId: string | null | undefined;
   onEditProfile: () => void;
 };
 
 export function ProfileSidebar({
   user,
   isLogged,
+  loggedUserId,
   onEditProfile,
 }: ProfileSidebarProps) {
   return (
@@ -42,11 +48,26 @@ export function ProfileSidebar({
               </div>
             )}
             <h2 className="text-xl font-semibold mb-2">{user.name}</h2>
-            <p className="text-sm text-gray-500 mb-4 resize-none disabled border-2 rounded-lg border-gray-200 w-full p-5 ">
+            <div className="flex flex-row space-x-1 text-sm justify-center items-center mb-3">
+              <p className="text-black">{user.following?.length || 0}</p>
+              <p className="text-gray-500 pr-4">Seguindo</p>
+              <p className="text-black">{user.followers?.length || 0}</p>
+              <p className="text-gray-500 ">Seguidores </p>
+            </div>
+
+            <p className="text-sm text-black mb-2 resize-none disabled  p-5 ">
               {user.bio}
             </p>
             <SidebarSocialLinks props={{ socials: user.socials }} />
-            {isLogged && <EditProfileButton onEditProfile={onEditProfile} />}
+            {isLogged ? (
+              <>
+                <EditProfileButton onEditProfile={onEditProfile} />
+              </>
+            ) : (
+              <>
+                <FollowButton profileId={user.id} userId={loggedUserId} />
+              </>
+            )}
           </div>
         </CardContent>
       </Card>

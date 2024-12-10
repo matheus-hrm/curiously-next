@@ -23,6 +23,21 @@ model User {
     receivedQuestions Question[] @relation("QuestionReceiver")
     authoredQuestions Question[] @relation("QuestionAuthor")
     Question          Question[]
+
+    following Follow[] @relation("UserFollowing")
+    followers Follow[] @relation("UserFollowers")
+}
+
+model Follow {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    followerId  String   @map("_followerId") @db.ObjectId
+    followingId String   @map("_followingId") @db.ObjectId
+    createdAt   DateTime @default(now())
+
+    follower  User @relation("UserFollowers", fields: [followerId], references: [id])
+    following User @relation("UserFollowing", fields: [followingId], references: [id])
+
+    @@unique([followerId, followingId])
 }
 
 model Question {

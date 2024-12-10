@@ -44,7 +44,7 @@ export default function SidebarSocialLinks({
               >
                 <Icon key={i} className="w-5 h-5" />
                 <div className="font-extralight text-sm pl-2 hover:underline">
-                  <p>
+                  <p className="text-blue-500 hover:decoration-blue-500 hover:underline">
                     {url.includes('.com/')
                       ? url.split('.com/')[1]
                       : url.replaceAll('https://', '')}

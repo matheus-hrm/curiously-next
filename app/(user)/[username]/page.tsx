@@ -10,6 +10,8 @@ import LogoutButton from '../_components/logout-button';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import UserSidebar from '../_components/_user-sidebar/user-sidebar-client';
+import { getFollowingUsers } from '@/app/api/[username]/following/route';
+import { getFollowers } from '@/app/api/[username]/followers/route';
 
 export default async function UserPage({
   params,
@@ -25,6 +27,8 @@ export default async function UserPage({
   const loggedUser = session?.user;
   const questions = await getUserQuestions(user.id);
   const answers = await getAllAnswers(user.id);
+  const following = await getFollowingUsers(user.id);
+  const followers = await getFollowers(user.id);
   console.log(user);
 
   return (
@@ -41,13 +45,17 @@ export default async function UserPage({
             <div className="grid gap-6 md:grid-cols-[300px_1fr]">
               <UserSidebar
                 user={{
-                  name: user.username,
+                  name: user.name,
                   id: user.id,
+                  username: user.username,
                   avatar: user.profilePicture || '',
                   bio: user.bio || '',
                   socials: user.socials || [],
+                  followers: followers || [],
+                  following: following || [],
                 }}
                 isLogged={loggedUser?.id === user.id}
+                loggedUserId={loggedUser?.id}
               />
               <QuestionFeed
                 questions={questions}
