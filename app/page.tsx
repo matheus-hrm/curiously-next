@@ -5,6 +5,7 @@ import { getFollowingUsers } from './api/[username]/following/route';
 import { prisma } from '@/prisma/prisma';
 import { Input } from '@/components/ui/input';
 import { Bell } from 'lucide-react';
+import FeedAnswerCard from './(home)/_components/feed-card';
 
 type Feed = {
   id: string;
@@ -25,8 +26,8 @@ type Feed = {
 
 export async function Home({ feed }: { feed: Feed }) {
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-row justify-between items-center">
+    <div className="flex flex-col bg-gradient-to-b from-gray-50 to-gray-100">
+      <div className="flex flex-row justify-between items-center mb-24">
         <div className="">
           <p>Logo</p>
         </div>
@@ -39,29 +40,25 @@ export async function Home({ feed }: { feed: Feed }) {
           <Bell className="w-6 h-6" />
         </div>
       </div>
-      <div className="">
-        {feed &&
-          feed.map((answer) => (
-            <Card key={answer.id}>
-              <CardContent>
-                <div className="flex flex-row items-center space-x-2">
-                  <img
-                    src={answer.author.profilePicture}
-                    alt="profile"
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <div className="flex flex-col">
-                    <p>{answer.author.name}</p>
-                    <p>{answer.author.username}</p>
-                  </div>
-                </div>
-                <div className="flex flex-col">
-                  <p>{answer.content}</p>
-                  <p>{answer.createdAt}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+      <div className="flex flex-row justify-between items-start space-x-10">
+        <div className="w-1/4">
+          <p>Left Sidebar</p>
+        </div>
+        <div className="flex flex-col w-2/4">
+          <p className="text-2xl mx-4 overflow-y-auto">Feed</p>
+          {feed &&
+            feed.map((answer) => (
+              <FeedAnswerCard
+                key={answer.id}
+                sender={answer.author}
+                answer={answer}
+                follower={answer.author}
+              />
+            ))}
+        </div>
+        <div className="w-1/4">
+          <p>Right Sidebar</p>
+        </div>
       </div>
     </div>
   );
