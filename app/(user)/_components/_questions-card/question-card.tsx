@@ -60,9 +60,11 @@ export default function QuestionCard({
                 </Link>
               )}
               {isAnonymous && (
-                <h3 className="font-extralight text-black/70 mb-1">Anônimo</h3>
+                <h3 className="font-extralight text-sm text-black/60 mb-1">
+                  Anônimo
+                </h3>
               )}
-              <p className="text-black/90 ">{question.content}</p>
+              <p className="text-black">{question.content}</p>
               <div className="flex flex-row items-center justify-start gap-4">
                 {answerCount > 0 ? (
                   <AnswersWrapper

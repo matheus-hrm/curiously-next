@@ -2,17 +2,12 @@
 
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { MessageCircle, SeparatorHorizontal } from 'lucide-react';
+
+import { MessageCircle, Send, User } from 'lucide-react';
 import { useState } from 'react';
 import { replyQuestion } from '../../[username]/actions';
 import { Input } from '@/components/ui/input';
+import Modal from '@/components/ui/modal';
 
 type QuestionProp = {
   question: {
@@ -45,46 +40,49 @@ export default function ReplyQuestion({ question }: QuestionProp) {
   };
   return (
     <>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button
-            className="bg-black/70 text-white border-white border-2 hover:bg-black/50 hover:text-white"
-            variant="outline"
-            onClick={() => setReplying(!replying)}
-          >
-            <MessageCircle className="mr-1 h-4 w-4" />
-            Reply
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="">
-          <DialogHeader>
-            <DialogTitle>Reply</DialogTitle>
-            <div className="flex flex-col justify-center items-start mt-5 py-4 ">
-              <div className="flex flex-row items-center ">
-                <Avatar className="w-10 h-10">
+      <Button
+        className="bg-black/70 text-white border-white border-2 hover:bg-black/50 hover:text-white"
+        variant="outline"
+        onClick={() => setReplying(!replying)}
+      >
+        <MessageCircle className="mr-1 h-4 w-4" />
+        Reply
+      </Button>
+      {replying && (
+        <Modal isOpen={replying} onClose={() => setReplying(false)}>
+          <div className="flex flex-col justify-center items-start mt-5 py-4 bg-white bg-opacity-10 backdrop-blur-lg rounded-lg p-4">
+            <div className="flex flex-row items-center justify-center">
+              <Avatar className="w-10 h-10">
+                {question.sender?.profilePicture ? (
                   <AvatarImage src={question.sender?.profilePicture} />
-                </Avatar>
+                ) : (
+                  <User className="h-10 w-10 text-black/60" />
+                )}
+              </Avatar>
+              {question.sender?.name ? (
                 <p className="text-lg px-4">{question.sender?.name}</p>
-              </div>
-              <p className="text-xl mt-4 p-4 text-black border-t-2 border-gray-300 w-full">
-                {question.content}
-              </p>
+              ) : (
+                <p className="text-md px-4">Anônimo</p>
+              )}
             </div>
-          </DialogHeader>
+            <p className="text-xl mt-4 text-black w-full">{question.content}</p>
+          </div>
           <Input
-            className="w-full"
-            placeholder="Responder"
+            className="w-full mt-4"
+            placeholder="Sua resposta"
             value={reply}
             onChange={(e) => setReply(e.target.value)}
           />
           <Button
             variant="default"
+            className="mt-4"
             onClick={() => handleAnswerQuestion(question)}
           >
-            Send
+            Enviar
+            <Send className="ml-2 h-4 w-4" />
           </Button>
-        </DialogContent>
-      </Dialog>
+        </Modal>
+      )}
     </>
   );
 }
