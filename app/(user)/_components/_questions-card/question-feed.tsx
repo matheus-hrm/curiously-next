@@ -67,7 +67,7 @@ export default async function QuestionFeed({
                   <QuestionCard
                     question={question}
                     answerCount={questionAnswers.length}
-                    canReply={owner}
+                    owner={owner}
                     answers={questionAnswers}
                   />
                 </div>

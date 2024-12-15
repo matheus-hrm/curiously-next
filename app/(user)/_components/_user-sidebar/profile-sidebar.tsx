@@ -15,8 +15,18 @@ type ProfileSidebarProps = {
     avatar: string;
     bio: string;
     socials: string[];
-    following: string[];
-    followers: string[];
+    following: {
+      id: string;
+      username: string;
+      name: string;
+      profilePicture: string | null;
+    }[];
+    followers: {
+      id: string;
+      username: string;
+      name: string;
+      profilePicture: string | null;
+    }[];
   };
   isLogged: boolean;
   loggedUserId: string | null | undefined;

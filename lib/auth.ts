@@ -1,4 +1,4 @@
-import NextAuth, { CredentialsSignin, Account ,Profile} from 'next-auth';
+import NextAuth, { CredentialsSignin, Account, Profile } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
 import Discord from 'next-auth/providers/discord';
@@ -31,7 +31,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     Credentials({
       credentials: {
         username: { label: 'Username', type: 'text', placeholder: 'username' },
-        password: { label: 'Password', type: 'password', placeholder: 'password', },
+        password: {
+          label: 'Password',
+          type: 'password',
+          placeholder: 'password',
+        },
       },
 
       async authorize(credentials) {
@@ -40,17 +44,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         }
 
         const dbUser = await prisma.user.findFirst({
-          where: 
-          {
+          where: {
             username: credentials.username,
           },
         });
         if (!dbUser) {
-          console.log('no user');
           throw new InvalidLoginError();
         }
 
-        const isValid = await verifyPassword(credentials.password as string, dbUser.hashedPassword);
+        const isValid = await verifyPassword(
+          credentials.password as string,
+          dbUser.hashedPassword,
+        );
         if (!isValid) {
           throw new InvalidLoginError();
         }
@@ -61,13 +66,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           name: dbUser.username,
           username: dbUser.username,
         };
-      }
+      },
     }),
   ],
   callbacks: {
     async jwt({ token, user, account, profile }) {
       if (user) {
         token.id = user.id;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         token.username = (user as any).username;
       }
 
@@ -78,75 +84,82 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
       return token;
     },
-  async signIn({ account, profile }: { account?: Account | null; profile?: Profile }) {
-    if (account?.provider == 'google' || account?.provider == 'discord') {
-      try {
-      const user = await prisma.user.findFirst({
-        where: 
-            {
-              email: profile?.email ?? undefined,
+    async signIn({
+      account,
+      profile,
+    }: {
+      account?: Account | null;
+      profile?: Profile;
+    }) {
+      if (!account?.provider || !profile?.email) {
+        return false;
+      }
+
+      if (account.provider == 'google' || account.provider == 'discord') {
+        try {
+          const user = await prisma.user.findFirst({
+            where: {
+              email: profile.email,
             },
           });
-      if (!user) {
-        if (account?.provider == 'discord') {
-          await prisma.user.create({
-            data: {
-              email: profile?.email!,
-              username: String(profile?.username),
-              name: String(profile?.global_name),
-              hashedPassword: '',
-              profilePicture: String(profile?.image_url!),
-              accounts: {
-                create: {
-                  type: account.type,
-                  provider: account.provider,
-                  providerAccountId: account.providerAccountId,
-                  access_token: account.accessToken as string | undefined,
-                  refresh_token: account.refreshToken as string | undefined,
+          if (!user) {
+            if (account.provider == 'discord') {
+              await prisma.user.create({
+                data: {
+                  email: profile?.email!,
+                  username: String(profile?.username),
+                  name: String(profile?.global_name),
+                  hashedPassword: '',
+                  profilePicture: String(profile?.image_url!),
+                  accounts: {
+                    create: {
+                      type: account.type,
+                      provider: account.provider,
+                      providerAccountId: account.providerAccountId,
+                      access_token: account.accessToken as string,
+                      refresh_token: account.refreshToken as string,
+                    },
+                  },
                 },
-              }
-            },
-          });
-        }
-        if (account?.provider == 'google') {
-          console.log(profile);
-          await prisma.user.create({
-            data: {
-              email: profile?.email!,
-              username: String(profile?.name),
-              name: String(profile?.name),
-              hashedPassword: '',
-              profilePicture: String(profile?.picture),
-              accounts: {
-                create: {
-                  type: account.type,
-                  provider: account.provider,
-                  providerAccountId: account.providerAccountId,
-                  access_token: account.accessToken as string | undefined,
-                  refresh_token: account.refreshToken as string | undefined,
-                },
-              }
+              });
             }
-          })
+            if (account.provider == 'google') {
+              await prisma.user.create({
+                data: {
+                  email: profile?.email!,
+                  username: String(profile?.name),
+                  name: String(profile?.name),
+                  hashedPassword: '',
+                  profilePicture: String(profile?.picture),
+                  accounts: {
+                    create: {
+                      type: account.type,
+                      provider: account.provider,
+                      providerAccountId: account.providerAccountId,
+                      access_token: account.accessToken as string,
+                      refresh_token: account.refreshToken as string,
+                    },
+                  },
+                },
+              });
+            }
+          }
+          return true;
+        } catch (error) {
+          return false;
         }
       }
       return true;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  }
-  return true;
-  },
-  async session({ session, token }: { session: any; token: any }) {
-    if (session.user) {
-      session.user.id = token.id;
-      session.user.username = token.username;
-    } 
-    return session;
-  },
-  async redirect({ url, baseUrl }: { url: string; baseUrl: string;  }) {
-    return url.startsWith(baseUrl) ? url : baseUrl; 
-  },
+    },
+    async session({ session, token }: { session: any; token: any }) {
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.username = token.username;
+      }
+      return session;
+    },
+    async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    },
   },
 });

@@ -29,7 +29,6 @@ export default async function UserPage({
   const answers = await getAllAnswers(user.id);
   const following = await getFollowingUsers(user.id);
   const followers = await getFollowers(user.id);
-  console.log(user);
 
   return (
     <>

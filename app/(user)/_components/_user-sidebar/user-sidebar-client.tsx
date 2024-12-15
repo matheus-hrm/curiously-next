@@ -12,8 +12,18 @@ type UserSidebarClientProps = {
     avatar: string;
     bio: string;
     socials: string[];
-    followers: any[];
-    following: any[]; //TODO: Fix this type
+    followers: {
+      id: string;
+      username: string;
+      name: string;
+      profilePicture: string | null;
+    }[];
+    following: {
+      id: string;
+      username: string;
+      name: string;
+      profilePicture: string | null;
+    }[];
   };
   isLogged: boolean;
   loggedUserId: string | null | undefined;
@@ -25,6 +35,9 @@ export default function UserSidebarClient({
   loggedUserId,
 }: UserSidebarClientProps) {
   const [isEditing, setIsEditing] = useState(false);
+
+  console.log(user.followers);
+  console.log(user.following);
 
   const handleEdit = () => setIsEditing(true);
   const handleClose = () => setIsEditing(false);

@@ -70,7 +70,3 @@ export default function FollowButton({ profileId, userId }: FollowButtonProps) {
     </>
   );
 }
-
-function isFollowingUser(following: any[], profileId: string) {
-  return following.some((user) => user.id === profileId);
-}

@@ -129,7 +129,7 @@ export default function SignInForm() {
       </Card>
 
       <span className="text-sm text-muted-foreground mt-4">
-        Don't have an account ?
+        Don&apos;t have an account ?
         <span className="font-bold p-2 text-black">
           <Link href={'/signup'}>Sign Up</Link>
         </span>

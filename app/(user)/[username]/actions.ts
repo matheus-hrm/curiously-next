@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from "@/prisma/prisma";
+import { prisma } from '@/prisma/prisma';
 
 export const getUser = async (username: string) => {
   return await prisma.user.findFirst({
@@ -11,17 +11,26 @@ export const getUser = async (username: string) => {
 };
 
 export async function SendQuestion(
-  content: string, 
+  content: string,
   senderId: string | null,
   recipientId: string,
-  isAnonymous: boolean = true
+  isAnonymous: boolean = true,
 ) {
-  const data: any = {
+  const data: {
+    content: string;
+    isAnonymous: boolean;
+    receiver: {
+      connect: { id: string };
+    };
+    author?: {
+      connect: { id: string };
+    };
+  } = {
     content: content,
     isAnonymous: isAnonymous,
     receiver: {
       connect: { id: recipientId },
-    }
+    },
   };
 
   if (!isAnonymous && senderId) {
@@ -40,7 +49,7 @@ export async function SendQuestion(
 export async function getUserQuestions(userId: string) {
   return await prisma.question.findMany({
     where: {
-      receiverId:  userId,
+      receiverId: userId,
     },
   });
 }
@@ -80,10 +89,9 @@ export const getAnswer = async (questionId: string) => {
       questionId: questionId,
     },
   });
-}
+};
 
-export const getAllAnswers = async (userId : string) => {
-  
+export const getAllAnswers = async (userId: string) => {
   const answers = await prisma.answer.findMany({
     where: {
       authorId: userId,
@@ -98,11 +106,10 @@ export const getAllAnswers = async (userId : string) => {
         user: {
           name: user?.username || '',
           profilePicture: user?.profilePicture || '',
-        }
+        },
       };
-    })
+    }),
   );
 
   return answersWithUsers;
-
-}
+};

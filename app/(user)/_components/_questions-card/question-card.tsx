@@ -1,8 +1,9 @@
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { User } from 'lucide-react';
+import { Share2, User } from 'lucide-react';
 import Link from 'next/link';
 import AnswersWrapper from './answer-wrapper';
 import ReplyQuestion from './reply-question';
+import { Button } from '@/components/ui/button';
 
 type QuestionCardProps = {
   question: {
@@ -16,7 +17,7 @@ type QuestionCardProps = {
     createdAt: Date;
   };
   answerCount: number;
-  canReply: boolean;
+  owner: boolean;
   answers: Answer[];
 };
 
@@ -31,13 +32,14 @@ type Answer = {
 export default function QuestionCard({
   question,
   answerCount,
-  canReply,
+  owner,
   answers,
 }: QuestionCardProps) {
   const isAnonymous = !question.sender || question.isAnonymous;
+
   return (
     <>
-      {answerCount <= 0 && !canReply ? null : (
+      {answerCount <= 0 && !owner ? null : (
         <>
           <div className="flex items-start gap-4 mb-2">
             <Avatar>
@@ -64,17 +66,24 @@ export default function QuestionCard({
                   Anônimo
                 </h3>
               )}
-              <p className="text-black">{question.content}</p>
+              <p className="text-black pb-2">{question.content}</p>
               <div className="flex flex-row items-center justify-start gap-4">
                 {answerCount > 0 ? (
                   <AnswersWrapper
                     answers={answers}
                     count={answerCount}
                     question={question}
-                    canReply={canReply}
+                    canReply={owner}
                   />
                 ) : (
-                  canReply && <ReplyQuestion question={question} />
+                  owner && <ReplyQuestion question={question} />
+                )}
+                {owner && (
+                  <div>
+                    <Button variant={'ghost'} className="hover:bg-black/10">
+                      <Share2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>

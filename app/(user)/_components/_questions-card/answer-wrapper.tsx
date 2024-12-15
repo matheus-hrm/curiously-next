@@ -16,7 +16,16 @@ type Answer = {
 type AnswersSectionProps = {
   answers: Answer[];
   count: number;
-  question: any;
+  question: {
+    id: string;
+    content: string;
+    sender?: {
+      name: string;
+      profilePicture: string;
+    };
+    isAnonymous: boolean;
+    createdAt: Date;
+  };
   canReply: boolean;
 };
 

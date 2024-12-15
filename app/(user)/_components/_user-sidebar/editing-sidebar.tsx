@@ -35,17 +35,13 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
   const [imageHover, setImageHover] = useState(false);
   const [newName, setNewName] = useState(user.name);
   const [newBio, setNewBio] = useState(user.bio);
-  const [uploadError, setUploadError] = useState<String | null>(null);
+  const [, setUploadError] = useState<String | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [socials, setSocials] = useState(user.socials);
   const [newSocial, setNewSocial] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
+  const [, setIsSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  const handleSwitchProfilePicture = () => {
-    fileInputRef.current?.click();
-  };
 
   const handleAddSocial = () => {
     if (!newSocial) return;

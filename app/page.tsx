@@ -1,4 +1,3 @@
-import { Card, CardContent } from '@/components/ui/card';
 import { auth } from '@/lib/auth';
 import { getUserById } from './(user)/[username]/actions';
 import { getFollowingUsers } from './api/[username]/following/route';
