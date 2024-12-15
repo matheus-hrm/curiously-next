@@ -6,6 +6,7 @@ import { prisma } from '@/prisma/prisma';
 import { Input } from '@/components/ui/input';
 import { Bell } from 'lucide-react';
 import FeedAnswerCard from './(home)/_components/feed-card';
+import { MainLogo } from '@/components/main-logo';
 
 type Feed = {
   id: string;
@@ -29,7 +30,7 @@ export async function Home({ feed }: { feed: Feed }) {
     <div className="flex flex-col bg-gradient-to-b from-gray-50 to-gray-100">
       <div className="flex flex-row justify-between items-center mb-24">
         <div className="">
-          <p>Logo</p>
+          <MainLogo />
         </div>
         <div className="flex flex-row justify-center items-center m-4 space-x-4">
           <Input
