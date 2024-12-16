@@ -106,11 +106,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             if (account.provider == 'discord') {
               await prisma.user.create({
                 data: {
-                  email: profile?.email!,
+                  email: profile.email,
                   username: String(profile?.username),
                   name: String(profile?.global_name),
                   hashedPassword: '',
-                  profilePicture: String(profile?.image_url!),
+                  profilePicture: String(profile?.image_url),
                   accounts: {
                     create: {
                       type: account.type,
@@ -126,7 +126,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             if (account.provider == 'google') {
               await prisma.user.create({
                 data: {
-                  email: profile?.email!,
+                  email: profile?.email,
                   username: String(profile?.name),
                   name: String(profile?.name),
                   hashedPassword: '',
@@ -146,15 +146,17 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           }
           return true;
         } catch (error) {
+          console.error(error);
           return false;
         }
       }
       return true;
     },
-    async session({ session, token }: { session: any; token: any }) {
+    async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id;
-        session.user.username = token.username;
+        session.user.id = token.id as string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (session.user as any).username = token.username;
       }
       return session;
     },

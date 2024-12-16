@@ -10,8 +10,6 @@ import LogoutButton from '../_components/logout-button';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import UserSidebar from '../_components/_user-sidebar/user-sidebar-client';
-import { getFollowingUsers } from '@/app/api/[username]/following/route';
-import { getFollowers } from '@/app/api/[username]/followers/route';
 
 export default async function UserPage({
   params,
@@ -27,8 +25,8 @@ export default async function UserPage({
   const loggedUser = session?.user;
   const questions = await getUserQuestions(user.id);
   const answers = await getAllAnswers(user.id);
-  const following = await getFollowingUsers(user.id);
-  const followers = await getFollowers(user.id);
+  const following = await getFollowingUsers(user.username);
+  const followers = await getFollowers(user.username);
 
   return (
     <>
@@ -86,4 +84,48 @@ export default async function UserPage({
       </Suspense>
     </>
   );
+}
+
+async function getFollowingUsers(username: string) {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/${username}/following`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch following');
+    }
+
+    const data = await response.json();
+    return data.following || [];
+  } catch (error) {
+    console.error('Error fetching following:', error);
+    return [];
+  }
+}
+
+async function getFollowers(username: string) {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/${username}/followers`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch followers');
+    }
+
+    const data = await response.json();
+    return data.followers || [];
+  } catch (error) {
+    console.error('Error fetching followers:', error);
+    return [];
+  }
 }

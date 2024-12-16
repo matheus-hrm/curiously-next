@@ -75,7 +75,11 @@ export function ProfileSidebar({
               </>
             ) : (
               <>
-                <FollowButton profileId={user.id} userId={loggedUserId} />
+                <FollowButton
+                  profileId={user.id}
+                  userId={loggedUserId}
+                  username={user.username}
+                />
               </>
             )}
           </div>

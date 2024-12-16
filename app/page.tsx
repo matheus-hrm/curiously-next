@@ -1,6 +1,5 @@
 import { auth } from '@/lib/auth';
 import { getUserById } from './(user)/[username]/actions';
-import { getFollowingUsers } from './api/[username]/following/route';
 import { prisma } from '@/prisma/prisma';
 import { Input } from '@/components/ui/input';
 import { Bell } from 'lucide-react';
@@ -24,7 +23,7 @@ type Feed = {
   };
 }[];
 
-export async function Home({ feed }: { feed: Feed }) {
+async function Home({ feed }: { feed: Feed }) {
   return (
     <div className="flex flex-col bg-gradient-to-b from-gray-50 to-gray-100">
       <div className="flex flex-row justify-between items-center mb-24">
@@ -110,4 +109,19 @@ async function GetHomePageFeed(userId: string) {
       createdAt: answer.question.createdAt.toISOString(),
     },
   }));
+}
+
+async function getFollowingUsers(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      following: {
+        include: {
+          following: true,
+        },
+      },
+    },
+  });
+  const following = user?.following.map((follow) => follow.following);
+  return following;
 }

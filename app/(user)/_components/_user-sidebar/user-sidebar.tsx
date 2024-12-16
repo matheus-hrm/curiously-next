@@ -9,8 +9,18 @@ type UserSidebarProps = {
     avatar: string;
     bio: string;
     socials: string[];
-    followers: string[];
-    following: string[];
+    followers: {
+      id: string;
+      username: string;
+      name: string;
+      profilePicture: string | null;
+    }[];
+    following: {
+      id: string;
+      username: string;
+      name: string;
+      profilePicture: string | null;
+    }[];
   };
   isLogged: boolean;
 };

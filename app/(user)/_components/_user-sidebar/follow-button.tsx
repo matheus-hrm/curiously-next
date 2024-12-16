@@ -1,7 +1,5 @@
 'use client';
 
-import { followUser } from '@/app/api/[username]/follow/route';
-import { unfollowUser } from '@/app/api/[username]/unfollow/route';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import { useEffect, useState } from 'react';
@@ -9,10 +7,16 @@ import { useEffect, useState } from 'react';
 type FollowButtonProps = {
   profileId: string;
   userId: string | null | undefined;
+  username: string;
 };
 
-export default function FollowButton({ profileId, userId }: FollowButtonProps) {
+export default function FollowButton({
+  profileId,
+  userId,
+  username,
+}: FollowButtonProps) {
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!userId) return;
@@ -22,7 +26,6 @@ export default function FollowButton({ profileId, userId }: FollowButtonProps) {
           `/api/is-following?userId=${userId}&profileId=${profileId}`,
         );
         const data = await response.json();
-        console.log('isFollowing', data.isFollowing);
         setIsFollowing(data.isFollowing);
       } catch (error) {
         console.error(error);
@@ -31,42 +34,57 @@ export default function FollowButton({ profileId, userId }: FollowButtonProps) {
     checkIsFollowing();
   }, [userId, profileId]);
 
-  const handleFollow = () => {
-    if (userId === null || userId === undefined) {
+  const handleFollow = async () => {
+    if (!userId) {
       toast({
         title: 'Você precisa estar logado para seguir alguém',
         variant: 'destructive',
       });
       return;
     }
-    if (isFollowing) {
-      setIsFollowing(false);
-      unfollowUser(profileId, userId);
-    } else {
-      setIsFollowing(true);
-      followUser(profileId, userId);
+
+    setIsLoading(true);
+    try {
+      const endpoint = isFollowing ? 'unfollow' : 'follow';
+      const response = await fetch(`/api/${username}/${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, profileId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update follow status');
+      }
+
+      setIsFollowing(!isFollowing);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description:
+          error instanceof Error ? error.message : 'Something went wrong',
+        variant: 'destructive',
+      });
+      // Revert state on error
+      setIsFollowing(isFollowing);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <>
-      {isFollowing ? (
-        <Button
-          variant="outline"
-          className="w-full hover:bg-black/20 "
-          onClick={handleFollow}
-        >
-          <p>Deixar de seguir</p>
-        </Button>
-      ) : (
-        <Button
-          variant="outline"
-          className="w-full hover:bg-black/80 bg-black text-white hover:text-white"
-          onClick={handleFollow}
-        >
-          <p>Seguir</p>
-        </Button>
-      )}
-    </>
+    <Button
+      variant={isFollowing ? 'outline' : 'outline'}
+      className={`w-full ${
+        isFollowing
+          ? 'hover:bg-black/20'
+          : 'hover:bg-black/80 bg-black text-white hover:text-white'
+      }`}
+      onClick={handleFollow}
+      disabled={isLoading}
+    >
+      <p>{isFollowing ? 'Deixar de seguir' : 'Seguir'}</p>
+    </Button>
   );
 }
