@@ -1,17 +1,27 @@
 'use server';
 import { prisma } from '@/prisma/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
-export async function POST({
-  params,
-}: {
-  params: Promise<{ userId: string; followId: string }>;
-}) {
-  const { userId, followId } = await params;
-  const result = await unfollowUser(userId, followId);
-  return result;
+const unfollowUserSchema = z.object({
+  userId: z.string(),
+  profileId: z.string(),
+});
+
+export async function POST(Request: NextRequest) {
+  const body = await Request.json();
+  const { userId, profileId } = unfollowUserSchema.parse(body);
+
+  if (!userId || !profileId) {
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
+  }
+
+  const follow = await unfollowUser(profileId, userId);
+
+  return NextResponse.json({ follow });
 }
 
-export async function unfollowUser(followerId: string, followingId: string) {
+async function unfollowUser(followerId: string, followingId: string) {
   if (followerId === followingId) {
     throw new Error('You cannot unfollow yourself');
   }

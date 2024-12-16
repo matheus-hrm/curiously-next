@@ -1,23 +1,29 @@
 import { prisma } from '@/prisma/prisma';
 import { NextResponse } from 'next/server';
 
-export async function GET({ params }: { params: Promise<{ id: string }> }) {
-  const id = (await params).id;
-  const following = getFollowingUsers(id);
-  return NextResponse.json({ following }, { status: 200 });
-}
-
-export async function getFollowingUsers(userId: string) {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    include: {
-      following: {
-        include: {
-          following: true,
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ username: string }> },
+) {
+  try {
+    const username = (await params).username;
+    const user = await prisma.user.findUnique({
+      where: { username: username },
+      include: {
+        following: {
+          include: {
+            following: true,
+          },
         },
       },
-    },
-  });
-  const following = user?.following.map((follow) => follow.following);
-  return following;
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ following: user.following });
+  } catch (error) {
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
 }
