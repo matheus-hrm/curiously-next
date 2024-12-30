@@ -4,6 +4,7 @@ import Link from 'next/link';
 import AnswersWrapper from './answer-wrapper';
 import ReplyQuestion from './reply-question';
 import { Button } from '@/components/ui/button';
+import ShareButton from './share-button';
 
 type QuestionCardProps = {
   question: {
@@ -67,7 +68,7 @@ export default function QuestionCard({
                 </h3>
               )}
               <p className="text-black pb-2">{question.content}</p>
-              <div className="flex flex-row items-center justify-start gap-4">
+              <div className="flex flex-row items-center gap-4">
                 {answerCount > 0 ? (
                   <AnswersWrapper
                     answers={answers}
@@ -76,14 +77,12 @@ export default function QuestionCard({
                     canReply={owner}
                   />
                 ) : (
-                  owner && <ReplyQuestion question={question} />
-                )}
-                {owner && (
-                  <div>
-                    <Button variant={'ghost'} className="hover:bg-black/10">
-                      <Share2 className="w-4 h-4" />
-                    </Button>
-                  </div>
+                  owner && (
+                    <>
+                      <ReplyQuestion question={question} />
+                      <ShareButton question={question} />
+                    </>
+                  )
                 )}
               </div>
             </div>

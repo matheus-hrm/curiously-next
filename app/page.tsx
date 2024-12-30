@@ -44,8 +44,7 @@ async function Home({ feed }: { feed: Feed }) {
           <p>Left Sidebar</p>
         </div>
         <div className="flex flex-col w-2/4">
-          <p className="text-2xl mx-4 overflow-y-auto">Feed</p>
-          {feed &&
+          {feed && <p className="text-2xl mx-4 overflow-y-auto">Feed</p> &&
             feed.map((answer) => (
               <FeedAnswerCard
                 key={answer.id}
@@ -54,6 +53,7 @@ async function Home({ feed }: { feed: Feed }) {
                 follower={answer.author}
               />
             ))}
+          {!feed && <p className="text-2xl mx-4">Sem perguntas recentes</p>}
         </div>
         <div className="w-1/4">
           <p>Right Sidebar</p>

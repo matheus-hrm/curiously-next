@@ -4,6 +4,7 @@ import { useState } from 'react';
 import HideAnswersButton from './hide-answers-button';
 import AnswerCard from './answer-card';
 import ReplyQuestion from './reply-question';
+import ShareButton from './share-button';
 
 type Answer = {
   id: string;
@@ -49,6 +50,7 @@ export default function AnswersWrapper({
           onToggleAnswers={handleToggleAnswers}
         />
         {canReply && <ReplyQuestion question={question} />}
+        <ShareButton question={question} />
       </div>
       {showAnswers &&
         answers.map((answer) => <AnswerCard key={answer.id} answer={answer} />)}
