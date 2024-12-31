@@ -20,6 +20,7 @@ import { useRef, useState } from 'react';
 type EditingSidebarProps = {
   user: {
     name: string;
+    username: string;
     id: string;
     avatar: string;
     bio: string;
@@ -69,7 +70,7 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
         await handleImageUpload();
       }
 
-      const response = await fetch(`/api/${user.name}/update`, {
+      const response = await fetch(`/api/${user.username}/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

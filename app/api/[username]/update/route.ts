@@ -16,13 +16,13 @@ export async function PUT(
   try {
     const body = await req.json();
     const validatedData = updateProfileSchema.parse(body);
-
+    console.log(username)
     const updatedUser = await prisma.user.update({
       where: {
         username: username,
       },
       data: {
-        ...(validatedData.name && { username: validatedData.name }),
+        ...(validatedData.name && { name: validatedData.name }),
         ...(validatedData.bio && { bio: validatedData.bio }),
         ...(validatedData.socials && { socials: validatedData.socials }),
       },

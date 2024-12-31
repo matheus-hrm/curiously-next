@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Bell } from 'lucide-react';
 import FeedAnswerCard from './(home)/_components/feed-card';
 import { MainLogo } from '@/components/main-logo';
+import SignInPage from './auth/signin/page';
 
 type Feed = {
   id: string;
@@ -65,7 +66,7 @@ async function Home({ feed }: { feed: Feed }) {
 
 export default async function HomePage() {
   const user = await getUserPage();
-  if (!user) return <div>Landing Page</div>;
+  if (!user) return (<div><SignInPage/></div>);
   const feed = await GetHomePageFeed(user.id);
   return <Home feed={feed} />;
 }

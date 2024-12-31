@@ -57,7 +57,8 @@ export function ProfileSidebar({
                 <User className="h-24 w-24 text-gray-500" aria-hidden="true" />
               </div>
             )}
-            <h2 className="text-xl font-semibold mb-2">{user.name}</h2>
+            <h2 className="text-xl font-semibold">{user.name}</h2>
+            <h2 className="text-gray-400 text-lg mb-2">@{user.username}</h2>
             <div className="flex flex-row space-x-1 text-sm justify-center items-center mb-3">
               <p className="text-black">{user.following?.length || 0}</p>
               <p className="text-gray-500 pr-4">Seguindo</p>

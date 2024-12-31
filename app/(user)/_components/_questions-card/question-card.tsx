@@ -1,9 +1,8 @@
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { Share2, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import Link from 'next/link';
 import AnswersWrapper from './answer-wrapper';
 import ReplyQuestion from './reply-question';
-import { Button } from '@/components/ui/button';
 import ShareButton from './share-button';
 
 type QuestionCardProps = {
