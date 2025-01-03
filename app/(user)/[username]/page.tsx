@@ -20,7 +20,7 @@ export default async function UserPage({
   if (!user) {
     return <UserNotFound />;
   }
-  console.log(user)
+  console.log(user);
   const session = await auth();
   const loggedUser = session?.user;
   const questions = await getUserQuestions(user.id);

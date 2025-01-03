@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { getUser, getUserById } from '../../[username]/actions';
 import { auth } from '@/lib/auth';
 import { User as UserType } from '@/app/types/user';
-import QuestionCard from './question-card';
+import QuestionCardClient from './question-card-client';
 
 type QuestionFeedProps = {
   questions: Question[];
@@ -64,11 +64,12 @@ export default async function QuestionFeed({
               );
               return (
                 <div key={question.id} className="mb-6 last:mb-0">
-                  <QuestionCard
+                  <QuestionCardClient
                     question={question}
                     answerCount={questionAnswers.length}
                     owner={owner}
                     answers={questionAnswers}
+                    username={user.username}
                   />
                 </div>
               );

@@ -41,7 +41,10 @@ export default function QuestionCard({
     <>
       {answerCount <= 0 && !owner ? null : (
         <>
-          <div className="flex items-start gap-4 mb-2">
+          <div
+            id={`question-${question.id}`}
+            className="flex items-start gap-4 mb-2"
+          >
             <Avatar>
               {isAnonymous ? (
                 <User className="h-10 w-10 text-black/60" />
@@ -79,7 +82,11 @@ export default function QuestionCard({
                   owner && (
                     <>
                       <ReplyQuestion question={question} />
-                      <ShareButton question={question} />
+                      <ShareButton
+                        question={question}
+                        username="username"
+                        answer="answer"
+                      />
                     </>
                   )
                 )}

@@ -6,27 +6,36 @@ import { Bell } from 'lucide-react';
 import FeedAnswerCard from './(home)/_components/feed-card';
 import { MainLogo } from '@/components/main-logo';
 import SignInPage from './auth/signin/page';
+import ProfileTooltip from './(home)/_components/profile-tooltip';
 
-type Feed = {
-  id: string;
-  content: string;
-  createdAt: string;
-  author: {
-    id: string;
-    name: string;
-    username: string;
-    profilePicture: string;
-  };
-  question: {
+type HomeProps = {
+  feed: {
     id: string;
     content: string;
     createdAt: string;
+    author: {
+      id: string;
+      name: string;
+      username: string;
+      profilePicture: string;
+    };
+    question: {
+      id: string;
+      content: string;
+      createdAt: string;
+      isAnonymous: boolean;
+    };
+  }[];
+  user: {
+    username: string;
+    name: string;
+    profilePicture: string;
   };
-}[];
+};
 
-async function Home({ feed }: { feed: Feed }) {
+async function Home({ feed, user }: HomeProps) {
   return (
-    <div className="flex flex-col bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 h-screen">
       <div className="flex flex-row justify-between items-center mb-24">
         <div className="">
           <MainLogo />
@@ -35,17 +44,17 @@ async function Home({ feed }: { feed: Feed }) {
           <Input
             type="text"
             placeholder="Search"
-            className="border-2 border-gray-300 rounded-lg p-2"
+            className="border-2 border-black/40 ring-none rounded-lg p-2"
           ></Input>
-          <Bell className="w-6 h-6" />
+          <ProfileTooltip user={user} />
+          <Bell className="w-6 h-6 mr-2" />
         </div>
       </div>
-      <div className="flex flex-row justify-between items-start space-x-10">
-        <div className="w-1/4">
-          <p>Left Sidebar</p>
-        </div>
+      <div className="flex flex-row justify-between items-start space-x-10 ">
+        <div className="w-1/4"></div>
         <div className="flex flex-col w-2/4">
-          {feed && <p className="text-2xl mx-4 overflow-y-auto">Feed</p> &&
+          <p className="text-xl mx-4 o">Feed</p>
+          {feed.length > 0 ? (
             feed.map((answer) => (
               <FeedAnswerCard
                 key={answer.id}
@@ -53,12 +62,12 @@ async function Home({ feed }: { feed: Feed }) {
                 answer={answer}
                 follower={answer.author}
               />
-            ))}
-          {!feed && <p className="text-2xl mx-4">Sem perguntas recentes</p>}
+            ))
+          ) : (
+            <p className="text-lg mt-10 text-center">Sem perguntas recentes</p>
+          )}
         </div>
-        <div className="w-1/4">
-          <p>Right Sidebar</p>
-        </div>
+        <div className="w-1/4"></div>
       </div>
     </div>
   );
@@ -66,9 +75,23 @@ async function Home({ feed }: { feed: Feed }) {
 
 export default async function HomePage() {
   const user = await getUserPage();
-  if (!user) return (<div><SignInPage/></div>);
+  if (!user)
+    return (
+      <div>
+        <SignInPage />
+      </div>
+    );
   const feed = await GetHomePageFeed(user.id);
-  return <Home feed={feed} />;
+  return (
+    <Home
+      feed={feed}
+      user={{
+        name: user.name!,
+        profilePicture: user.profilePicture!,
+        username: user.username!,
+      }}
+    />
+  );
 }
 
 const getUserPage = async () => {
@@ -81,13 +104,24 @@ const getUserPage = async () => {
 
 async function GetHomePageFeed(userId: string) {
   if (!userId) return [];
+
   const following = await getFollowingUsers(userId);
   if (!following) return [];
+
   const feed = await prisma.answer.findMany({
     where: {
-      authorId: {
-        in: following.map((user) => user.id),
-      },
+      OR: [
+        {
+          authorId: {
+            in: following.map((user) => user.id),
+          },
+        },
+        {
+          question: {
+            isAnonymous: true,
+          },
+        },
+      ],
     },
     include: {
       author: true,

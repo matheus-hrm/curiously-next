@@ -1,83 +1,80 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-    id             String    @id @default(uuid())
-    username       String    @unique
-    name           String
-    email          String    @unique
-    bio            String?
-    profilePicture String?
-    socials        String[]
-    createdAt      DateTime  @default(now())
-    hashedPassword String
-    Answer         Answer[]
-    accounts       Account[]
-
-    receivedQuestions Question[] @relation("QuestionReceiver")
-    authoredQuestions Question[] @relation("QuestionAuthor")
-    Question          Question[]
-
-    following Follow[] @relation("UserFollowing")
-    followers Follow[] @relation("UserFollowers")
+  id                String     @id @default(uuid())
+  username          String     @unique
+  name              String
+  email             String     @unique
+  bio               String?
+  profilePicture    String?
+  socials           String[]
+  createdAt         DateTime   @default(now())
+  hashedPassword    String
+  accounts          Account[]
+  Answer            Answer[]
+  followers         Follow[]   @relation("UserFollowers")
+  following         Follow[]   @relation("UserFollowing")
+  authoredQuestions Question[] @relation("QuestionAuthor")
+  receivedQuestions Question[] @relation("QuestionReceiver")
+  Question          Question[]
 }
 
 model Follow {
-    id          String   @id @default(uuid())
-    followerId  String
-    followingId String
-    createdAt   DateTime @default(now())
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+  follower    User     @relation("UserFollowers", fields: [followerId], references: [id])
+  following   User     @relation("UserFollowing", fields: [followingId], references: [id])
 
-    follower  User @relation("UserFollowers", fields: [followerId], references: [id])
-    following User @relation("UserFollowing", fields: [followingId], references: [id])
-
-    @@unique([followerId, followingId])
+  @@unique([followerId, followingId])
 }
 
 model Question {
-    id          String   @id @default(uuid())
-    content     String
-    createdAt   DateTime @default(now())
-    isAnonymous Boolean  @default(true)
-    authorId    String?
-    receiverId  String
-    Answer      Answer[]
-    author      User?    @relation("QuestionAuthor", fields: [authorId], references: [id])
-    receiver    User     @relation("QuestionReceiver", fields: [receiverId], references: [id])
-    User        User?    @relation(fields: [userId], references: [id])
-    userId      String?
+  id          String   @id @default(uuid())
+  content     String
+  createdAt   DateTime @default(now())
+  isAnonymous Boolean  @default(true)
+  authorId    String?
+  receiverId  String
+  userId      String?
+  Answer      Answer[]
+  author      User?    @relation("QuestionAuthor", fields: [authorId], references: [id])
+  receiver    User     @relation("QuestionReceiver", fields: [receiverId], references: [id])
+  User        User?    @relation(fields: [userId], references: [id])
 }
 
 model Answer {
-    id         String   @id @default(uuid())
-    content    String
-    createdAt  DateTime @default(now())
-    author     User     @relation(fields: [authorId], references: [id])
-    authorId   String
-    question   Question @relation(fields: [questionId], references: [id])
-    questionId String
+  id         String   @id @default(uuid())
+  content    String
+  createdAt  DateTime @default(now())
+  authorId   String
+  questionId String
+  author     User     @relation(fields: [authorId], references: [id])
+  question   Question @relation(fields: [questionId], references: [id])
 }
 
 model Account {
-    id                String  @id @default(uuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    access_token      String?
-    refresh_token     String?
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String?
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  access_token      String?
+  refresh_token     String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
 }

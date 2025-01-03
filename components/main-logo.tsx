@@ -8,8 +8,8 @@ const kiwi = localFont({
 
 export const MainLogo = () => {
   return (
-    <div className="text-5xl text-teal-500 m-4 pl-2 flex flex-col justify-center items-center">
-      <p className={kiwi.className}>ナナシ</p>
+    <div className="text-xl  m-4 pl-2 flex flex-col justify-center items-center">
+      <p className={kiwi.className}>curiously</p>
       {/* <p className="text-xl font-mono text-black">nanashi</p> */}
     </div>
   );

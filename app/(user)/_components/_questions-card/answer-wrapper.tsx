@@ -50,7 +50,7 @@ export default function AnswersWrapper({
           onToggleAnswers={handleToggleAnswers}
         />
         {canReply && <ReplyQuestion question={question} />}
-        <ShareButton question={question} />
+        <ShareButton question={question} username="user" answer="answer" />
       </div>
       {showAnswers &&
         answers.map((answer) => <AnswerCard key={answer.id} answer={answer} />)}
