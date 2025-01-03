@@ -113,3 +113,11 @@ export const getAllAnswers = async (userId: string) => {
 
   return answersWithUsers;
 };
+
+export async function getQuestionById(id: string) {
+  return await prisma.question.findFirst({
+    where: {
+      id: id,
+    },
+  });
+}

@@ -2,7 +2,6 @@ import { auth } from '@/lib/auth';
 import { getUserById } from './(user)/[username]/actions';
 import { prisma } from '@/prisma/prisma';
 import { Input } from '@/components/ui/input';
-import { Bell } from 'lucide-react';
 import FeedAnswerCard from './(home)/_components/feed-card';
 import { MainLogo } from '@/components/main-logo';
 import SignInPage from './auth/signin/page';
@@ -41,13 +40,8 @@ async function Home({ feed, user }: HomeProps) {
           <MainLogo />
         </div>
         <div className="flex flex-row justify-center items-center m-4 space-x-4">
-          <Input
-            type="text"
-            placeholder="Search"
-            className="border-2 border-black/40 ring-none rounded-lg p-2"
-          ></Input>
+          <Input placeholder="Search" className="rounded-lg p-2"></Input>
           <ProfileTooltip user={user} />
-          <Bell className="w-6 h-6 mr-2" />
         </div>
       </div>
       <div className="flex flex-row justify-between items-start space-x-10 ">
@@ -78,6 +72,7 @@ export default async function HomePage() {
   if (!user)
     return (
       <div>
+        <MainLogo />
         <SignInPage />
       </div>
     );

@@ -16,13 +16,15 @@ import {
   TooltipProvider,
 } from '@/components/ui/tooltip';
 
+type FloatingCardProps = {
+  receiverId: string;
+  loggedUserId: string | undefined | null;
+};
+
 export default function FloatingCard({
   receiverId,
   loggedUserId,
-}: {
-  receiverId: string;
-  loggedUserId: string | undefined | null;
-}) {
+}: FloatingCardProps) {
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -39,6 +41,7 @@ export default function FloatingCard({
 
     try {
       setLoading(true);
+
       await SendQuestion(
         content,
         isAnonymous ? null : senderId,

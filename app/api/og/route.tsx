@@ -5,16 +5,6 @@ export const runtime = 'edge';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const question = searchParams.get('q');
-  const username = searchParams.get('u');
-
-  // Load the fonts
-  const geistBold = await fetch(
-    new URL('/fonts/Geist-Bold.ttf', request.url),
-  ).then((res) => res.arrayBuffer());
-
-  const geistRegular = await fetch(
-    new URL('/fonts/Geist-Regular.ttf', request.url),
-  ).then((res) => res.arrayBuffer());
 
   return new ImageResponse(
     (
@@ -38,8 +28,8 @@ export async function GET(request: Request) {
             left: 40,
             width: 60,
             height: 60,
-            borderLeft: '4px solid #6366f1',
-            borderTop: '4px solid #6366f1',
+            borderLeft: '4px solid #000000',
+            borderTop: '4px solid #000000',
           }}
         />
         <div
@@ -49,8 +39,8 @@ export async function GET(request: Request) {
             right: 40,
             width: 60,
             height: 60,
-            borderRight: '4px solid #6366f1',
-            borderTop: '4px solid #6366f1',
+            borderRight: '4px solid #000000',
+            borderTop: '4px solid #000000',
           }}
         />
         <div
@@ -60,8 +50,8 @@ export async function GET(request: Request) {
             left: 40,
             width: 60,
             height: 60,
-            borderLeft: '4px solid #6366f1',
-            borderBottom: '4px solid #6366f1',
+            borderLeft: '4px solid #000000',
+            borderBottom: '4px solid #000000',
           }}
         />
         <div
@@ -71,8 +61,8 @@ export async function GET(request: Request) {
             right: 40,
             width: 60,
             height: 60,
-            borderRight: '4px solid #6366f1',
-            borderBottom: '4px solid #6366f1',
+            borderRight: '4px solid #000000',
+            borderBottom: '4px solid #000000',
           }}
         />
 
@@ -92,7 +82,7 @@ export async function GET(request: Request) {
             style={{
               fontSize: 32,
               fontFamily: 'Geist-Bold',
-              color: '#6366f1',
+              color: '#000000',
               marginBottom: 24,
               display: 'flex',
               alignItems: 'center',
@@ -111,14 +101,12 @@ export async function GET(request: Request) {
             >
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
-            @{username}
           </div>
 
           {/* Question */}
           <div
             style={{
-              fontSize: 48,
-              fontFamily: 'Geist-Regular',
+              fontSize: 52,
               color: '#0f172a',
               textAlign: 'center',
               lineHeight: 1.4,
@@ -142,27 +130,13 @@ export async function GET(request: Request) {
             fontFamily: 'Geist-Bold',
           }}
         >
-          askme.vercel.app
+          curiously
         </div>
       </div>
     ),
     {
       width: 1200,
       height: 630,
-      fonts: [
-        {
-          name: 'Geist-Bold',
-          data: geistBold,
-          style: 'normal',
-          weight: 700,
-        },
-        {
-          name: 'Geist-Regular',
-          data: geistRegular,
-          style: 'normal',
-          weight: 400,
-        },
-      ],
     },
   );
 }

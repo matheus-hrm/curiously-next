@@ -45,7 +45,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
       }}
     >
       <div
-        className="relative flex flex-col justify-center bg-white bg-opacity-100 p-6 rounded-lg shadow-2xl w-1/2"
+        className="relative flex flex-col justify-center bg-white bg-opacity-100 p-6 rounded-lg shadow-2xl mx-4 max-w-md w-full sm:w-3/4 md:w-2/4 lg:w-1/3"
         onClick={(e) => e.stopPropagation()}
       >
         <button

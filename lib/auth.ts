@@ -10,6 +10,8 @@ class InvalidLoginError extends CredentialsSignin {
   code = 'Invalid username or password';
 }
 
+//TODO: Make function to send current profile picture to cloudinary so the cdn does not expires someday
+
 export const { auth, handlers, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
   adapter: PrismaAdapter(prisma),
