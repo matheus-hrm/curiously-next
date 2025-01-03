@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { formatTime } from '@/lib/utils';
-import { User, User2 } from 'lucide-react';
+import { User } from 'lucide-react';
 import Link from 'next/link';
 
 type FeedCardProps = {

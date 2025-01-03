@@ -35,11 +35,6 @@ export default function ShareButton({
     // Generate the permalink to the question
     const questionUrl = `${appUrl}/${username}?highlight=${question.id}`;
 
-    // Generate OG image URL
-    const ogImageUrl = `${appUrl}/api/og?u=${encodeURIComponent(
-      username,
-    )}&q=${encodeURIComponent(question.content)}`;
-
     // Create tweet text with answer
     const tweetText = `${answer}\n\n`;
 
