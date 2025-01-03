@@ -37,16 +37,18 @@ export default function QuestionFeedClient({
   owner,
 }: QuestionFeedClientProps) {
   const [questions, setQuestions] = useState(initialQuestions);
-  const [answers, _] = useState(initialAnswers);
+  const [answers] = useState(initialAnswers);
 
   useEffect(() => {
     const interval = setInterval(async () => {
       const newQuestions = await fetchQuestions(user.username);
-      toast({
-        title: 'Notificacao',
-        description: 'Voce tem novas perguntas!',
-        variant: 'default',
-      });
+      if (newQuestions.length > questions.length) {
+        toast({
+          title: 'Notificacao',
+          description: 'Voce tem novas perguntas!',
+          variant: 'default',
+        });
+      }
       setQuestions(newQuestions);
     }, 10000);
 

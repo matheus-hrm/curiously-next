@@ -18,16 +18,15 @@ import { Metadata } from 'next';
 import Settings from '../_components/settings';
 
 type Props = {
-  params: { username: string };
-  searchParams: { highlight: string };
+  searchParams: Promise<{
+    [key: string]: string | string[] | undefined;
+  }>;
 };
 
 export async function generateMetadata({
-  params,
   searchParams,
 }: Props): Promise<Metadata> {
-  const { username } = params;
-  const highlight = searchParams.highlight;
+  const highlight = (await searchParams)?.highlight as string;
   const question = await getQuestionById(highlight);
 
   return {
@@ -62,7 +61,7 @@ export async function generateMetadata({
         },
       ],
     },
-  };
+  } as Metadata;
 }
 
 export default async function UserPage({
