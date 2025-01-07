@@ -1,23 +1,24 @@
 import NextAuth, { CredentialsSignin, Account, Profile } from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
 import Discord from 'next-auth/providers/discord';
 import { prisma } from '@/prisma/prisma';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { verifyPassword } from './jwt';
 
 class InvalidLoginError extends CredentialsSignin {
   code = 'Invalid username or password';
 }
 
 //TODO: Make function to send current profile picture to cloudinary so the cdn does not expires someday
+//TODO: CHANGE FROM CREDENTIALS TO MAGIC LINK
+// ADD FORGOT PASSWORD FLOW
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
   adapter: PrismaAdapter(prisma),
+  debug: true,
   pages: {
-    signIn: '/signin',
-    signOut: '/signout',
+    signIn: '/auth/signin',
+    signOut: '/auth/signout',
     error: '/error',
     verifyRequest: '/verify-request',
   },
@@ -29,46 +30,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     Discord({
       clientId: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
-    }),
-    Credentials({
-      credentials: {
-        username: { label: 'Username', type: 'text', placeholder: 'username' },
-        password: {
-          label: 'Password',
-          type: 'password',
-          placeholder: 'password',
-        },
-      },
-
-      async authorize(credentials) {
-        if (!credentials || !credentials.username || !credentials.password) {
-          throw new InvalidLoginError();
-        }
-
-        const dbUser = await prisma.user.findFirst({
-          where: {
-            username: credentials.username,
-          },
-        });
-        if (!dbUser) {
-          throw new InvalidLoginError();
-        }
-
-        const isValid = await verifyPassword(
-          credentials.password as string,
-          dbUser.hashedPassword,
-        );
-        if (!isValid) {
-          throw new InvalidLoginError();
-        }
-
-        return {
-          id: dbUser.id,
-          email: dbUser.email,
-          name: dbUser.username,
-          username: dbUser.username,
-        };
-      },
     }),
   ],
   callbacks: {

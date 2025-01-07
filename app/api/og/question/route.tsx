@@ -4,27 +4,8 @@ export const runtime = 'edge';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const username = searchParams.get('username');
-  console.log(username);
+  const question = searchParams.get('q');
 
-  if (!username) {
-    return new Response('Missing username', { status: 400 });
-  }
-  const response = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-    }/api/${encodeURIComponent(username)}`,
-  );
-  if (!response.ok) {
-    return new Response('Failed to fetch user', { status: 500 });
-  }
-
-  const user = (await response.json()) as {
-    avatar: string;
-    username: string;
-    name: string;
-    bio: string;
-  };
   return new ImageResponse(
     (
       <div
@@ -95,44 +76,47 @@ export async function GET(request: Request) {
             maxWidth: '900px',
           }}
         >
-          {/* Profile Picture */}
-          <img
-            src={user.avatar}
-            width="120"
-            height="120"
-            style={{
-              borderRadius: '60px',
-              border: '4px solid #000000',
-            }}
-          />
-
+          {/* Username */}
           <div
             style={{
+              fontSize: 32,
+              fontFamily: 'Geist-Bold',
+              color: '#000000',
+              marginBottom: 24,
               display: 'flex',
-              flexDirection: 'column',
               alignItems: 'center',
-              gap: '8px',
+              gap: '12px',
             }}
           >
-            <div
-              style={{
-                fontSize: 48,
-                fontFamily: 'Geist-Bold',
-                color: '#000000',
-              }}
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              {user.name}
-            </div>
-            <div style={{ fontSize: 32, color: '#64748b' }}>
-              @{user.username}
-            </div>
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
           </div>
 
-          <div style={{ fontSize: 40, color: '#0f172a', marginTop: '16px' }}>
-            Ask me something!
+          {/* Question */}
+          <div
+            style={{
+              fontSize: 52,
+              color: '#0f172a',
+              textAlign: 'center',
+              lineHeight: 1.4,
+              maxWidth: '800px',
+            }}
+          >
+            {question}
           </div>
         </div>
 
+        {/* Branding */}
         <div
           style={{
             position: 'absolute',

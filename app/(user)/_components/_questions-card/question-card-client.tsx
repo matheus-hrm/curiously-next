@@ -26,7 +26,7 @@ type QuestionCardProps = {
   answerCount: number;
   owner: boolean;
   answers: Answer[];
-  username: string; // Add username to props
+  username: string;
 };
 
 export default function QuestionCardClient({
@@ -43,7 +43,6 @@ export default function QuestionCardClient({
       );
       if (questionElement) {
         questionElement.scrollIntoView({ behavior: 'smooth' });
-        questionElement.style.backgroundColor = '#f0f8ff'; // Highlight color
       }
     }
   }, [highlightId, question.id]);

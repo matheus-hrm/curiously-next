@@ -2,7 +2,12 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyToken } from './jwt';
 
-const publicRoutes = ['/signin', '/signup', '/error', '/verify-request'];
+const publicRoutes = [
+  '/auth/signin',
+  '/auth/signup',
+  '/error',
+  '/verify-request',
+];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -14,7 +19,7 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get('next-auth.session-token')?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL('/signin', request.url));
+    return NextResponse.redirect(new URL('/auth/signin', request.url));
   }
 
   try {
@@ -22,7 +27,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   } catch (e) {
     console.error(e);
-    return NextResponse.redirect(new URL('/signin', request.url));
+    return NextResponse.redirect(new URL('/auth/signin', request.url));
   }
 }
 

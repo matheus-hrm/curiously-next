@@ -17,26 +17,37 @@ type QuestionProps = {
     isAnonymous: boolean;
     createdAt: Date;
   };
-  answer: string;
+  answers: Answer[] | undefined;
   username: string;
+};
+
+type Answer = {
+  id: string;
+  content: string;
+  questionId: string;
+  username: string;
+  profilePicture: string;
 };
 
 export default function ShareButton({
   question,
-  answer,
+  answers,
   username,
 }: QuestionProps) {
   const [sharing, setSharing] = useState(false);
 
-  function handleTwitterShare() {
+  let tweetText = '';
+  answers?.forEach((answer) => {
+    if (answer.questionId === question.id) {
+      tweetText += `${answer.content}\n\n`;
+    }
+  });
+
+  const handleTwitterShare = () => {
     const baseUrl = 'https://twitter.com/intent/tweet';
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
 
-    // Generate the permalink to the question
     const questionUrl = `${appUrl}/${username}?highlight=${question.id}`;
-
-    // Create tweet text with answer
-    const tweetText = `${answer}\n\n`;
 
     window.open(
       `${baseUrl}?text=${encodeURIComponent(
@@ -45,7 +56,7 @@ export default function ShareButton({
       '_blank',
       'noopener',
     );
-  }
+  };
 
   return (
     <>
@@ -59,16 +70,18 @@ export default function ShareButton({
 
       {sharing && (
         <Modal isOpen={sharing} onClose={() => setSharing(false)}>
-          <div className="flex flex-col justify-center items-start space-y-4 mt-5 py-4 bg-white bg-opacity-10 backdrop-blur-lg rounded-lg p-4">
-            <p>Compartilhar</p>
-            <div className="flex flex-row items-center justify-center">
-              <Button
-                variant={'ghost'}
-                className="hover:bg-black/10"
-                onClick={handleTwitterShare}
+          <div className="flex flex-col justify-center items-start  mt-5 bg-white bg-opacity-10 backdrop-blur-lg rounded-lg p-5">
+            <p className="text-xl">Compartilhar</p>
+            <div className="flex flex-row items-center justify-center space-x-5">
+              <button onClick={handleTwitterShare} className="my-2 ">
+                <SVGIcons.X className="w-8 h-8" />
+              </button>
+              <button
+                // onClick={handleTwitterShare}
+                className="my-2 "
               >
-                <SVGIcons.X className="w-4 h-4" />
-              </Button>
+                <SVGIcons.discord className="w-8 h-8" />
+              </button>
             </div>
           </div>
         </Modal>

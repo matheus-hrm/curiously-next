@@ -25,7 +25,7 @@ export default function HideAnswersButton({
         variant="ghost"
         size="sm"
         onClick={handleToggle}
-        className="hover:bg-black/20"
+        className="hover:bg-black/10"
       >
         <>
           <ChevronDown

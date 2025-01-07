@@ -45,14 +45,14 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
       }}
     >
       <div
-        className="relative flex flex-col justify-center bg-white bg-opacity-100 p-6 rounded-lg shadow-2xl mx-4 max-w-md w-full sm:w-3/4 md:w-2/4 lg:w-1/3"
+        className="relative flex flex-col justify-center bg-inherit bg-opacity-100 p-6 rounded-lg shadow-2xl mx-4 max-w-md w-full sm:w-3/4 md:w-2/4 lg:w-1/3"
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute top-2 right-2 p-1 text-black text-lg hover:bg-black/20 rounded-full transition-all duration-200"
+          className="absolute z-10 top-2 right-2 p-2 text-black text-xl hover:bg-black/10 rounded-full transition-all duration-200"
           onClick={handleClose}
         >
-          <X className="w-6 h-6" />
+          <X className="w-8 h-8" />
         </button>
         {children}
       </div>

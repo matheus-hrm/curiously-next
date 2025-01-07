@@ -45,11 +45,13 @@ export async function SendQuestion(
 
   return question;
 }
-
 export async function getUserQuestions(userId: string) {
   return await prisma.question.findMany({
     where: {
       receiverId: userId,
+    },
+    orderBy: {
+      createdAt: 'desc',
     },
   });
 }

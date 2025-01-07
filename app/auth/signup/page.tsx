@@ -2,6 +2,7 @@ import { auth } from '@/lib/auth';
 import SignUpForm from '../_components/signup-form';
 import { User } from '@/app/types/user';
 import { redirect } from 'next/navigation';
+import { MainLogo } from '@/components/main-logo';
 
 export default async function SignUpPage() {
   const session = await auth();
@@ -12,6 +13,7 @@ export default async function SignUpPage() {
   return (
     <>
       <div className="flex text-black flex-col justify-center items-center">
+        <MainLogo />
         <SignUpForm />
       </div>
     </>

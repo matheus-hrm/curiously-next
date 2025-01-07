@@ -73,7 +73,7 @@ export default function FloatingCard({
       }`}
       style={{ position: 'fixed' }}
     >
-      <Card className="backdrop-blur-lg bg-white/90 border-none shadow-lg">
+      <Card className="backdrop-blur-lg bg-white border-none shadow-lg">
         <CardContent className="p-4 flex flex-row items-center justify-center">
           <Input
             placeholder={
@@ -113,12 +113,16 @@ export default function FloatingCard({
           {!loading ? (
             <Button
               onClick={() => handleSendQuestion(question, isAnonymous)}
-              className={error ? 'bg-red-500 hover:bg-red-500' : 'bg-green-500'}
+              className={
+                error
+                  ? 'bg-red-500 hover:bg-red-500'
+                  : 'bg-[hsl(var(--main-green))] hover:bg-[hsl(var(--main-green-dark))]'
+              }
             >
               <Send className="w-2" />
             </Button>
           ) : (
-            <Button className="bg-zinc-500">
+            <Button className="bg-[hsl(var(--main-blue))]">
               <LoaderCircle className="w-2 animate-spin" />
             </Button>
           )}

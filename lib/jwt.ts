@@ -1,14 +1,14 @@
-'use server'
+'use server';
 
 import { hash, compare } from 'bcrypt';
-import { sign, verify } from 'jsonwebtoken'
+import { sign, verify } from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET as string;
+const JWT_SECRET = '12341241' as string;
 
 type JWTPayload = {
-    sub: string;
-    iat: number;
-    exp: number;
+  sub: string;
+  iat: number;
+  exp: number;
 };
 
 export async function hashPassword(password: string) {
@@ -22,7 +22,7 @@ export async function hashPassword(password: string) {
 export async function verifyPassword(
   password: string,
   hashedPassword: string,
-) : Promise<boolean> {
+): Promise<boolean> {
   try {
     return await compare(password, hashedPassword);
   } catch (e) {
@@ -40,7 +40,7 @@ export async function createToken(payload: JWTPayload) {
 
 export async function verifyToken(token: string) {
   try {
-    return await verify(token, JWT_SECRET) as JWTPayload;
+    return (await verify(token, JWT_SECRET)) as JWTPayload;
   } catch (e) {
     throw new Error('Failed to verify token ' + e);
   }

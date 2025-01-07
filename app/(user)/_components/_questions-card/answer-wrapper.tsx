@@ -28,6 +28,7 @@ type AnswersSectionProps = {
     createdAt: Date;
   };
   canReply: boolean;
+  username: string;
 };
 
 export default function AnswersWrapper({
@@ -35,6 +36,7 @@ export default function AnswersWrapper({
   count,
   question,
   canReply,
+  username,
 }: AnswersSectionProps) {
   const [showAnswers, setShowAnswers] = useState(true);
 
@@ -50,7 +52,11 @@ export default function AnswersWrapper({
           onToggleAnswers={handleToggleAnswers}
         />
         {canReply && <ReplyQuestion question={question} />}
-        <ShareButton question={question} username="user" answer="answer" />
+        <ShareButton
+          question={question}
+          username={username}
+          answers={answers}
+        />
       </div>
       {showAnswers &&
         answers.map((answer) => <AnswerCard key={answer.id} answer={answer} />)}

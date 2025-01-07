@@ -19,6 +19,7 @@ type QuestionCardProps = {
   answerCount: number;
   owner: boolean;
   answers: Answer[];
+  username: string;
 };
 
 type Answer = {
@@ -34,6 +35,7 @@ export default function QuestionCard({
   answerCount,
   owner,
   answers,
+  username,
 }: QuestionCardProps) {
   const isAnonymous = !question.sender || question.isAnonymous;
 
@@ -77,6 +79,7 @@ export default function QuestionCard({
                     count={answerCount}
                     question={question}
                     canReply={owner}
+                    username={username}
                   />
                 ) : (
                   owner && (
@@ -84,8 +87,8 @@ export default function QuestionCard({
                       <ReplyQuestion question={question} />
                       <ShareButton
                         question={question}
-                        username="username"
-                        answer="answer"
+                        username={username}
+                        answers={answers}
                       />
                     </>
                   )

@@ -26,6 +26,7 @@ export default function Settings() {
         <DropdownMenuContent>
           <DropdownMenuItem>
             <p className=" text-md">Mudar username</p>
+            {/* TODO: IMPLEMENT */}
             <AtSignIcon className="w-12 mr-2 size-14" aria-hidden="true" />
           </DropdownMenuItem>
           <DropdownMenuSeparator className="bg-black/10" />

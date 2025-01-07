@@ -1,43 +1,63 @@
 import { Suspense } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { auth } from '@/lib/auth';
+import { Metadata } from 'next';
+import Link from 'next/link';
+import UserNotFound from './_not-found';
+import MainPageSkeleton from './loading';
+import QuestionFeed from '../_components/_questions-card/question-feed';
+import FloatingCard from '../_components/floating-card';
+import UserSidebar from '../_components/_user-sidebar/user-sidebar-client';
+import Settings from '../_components/settings';
 import {
   getAllAnswers,
   getQuestionById,
   getUser,
   getUserQuestions,
 } from './actions';
-import UserNotFound from './_not-found';
-import MainPageSkeleton from './loading';
-import QuestionFeed from '../_components/_questions-card/question-feed';
-import FloatingCard from '../_components/floating-card';
-import Link from 'next/link';
-import { auth } from '@/lib/auth';
-import UserSidebar from '../_components/_user-sidebar/user-sidebar-client';
-import { Metadata } from 'next';
-import Settings from '../_components/settings';
 
 type Props = {
   searchParams: Promise<{
     [key: string]: string | string[] | undefined;
   }>;
+  params: Promise<{ username: string }>;
 };
 
 export async function generateMetadata({
   searchParams,
+  params,
 }: Props): Promise<Metadata> {
+  const username = (await params).username;
+  const user = await getUser(username);
   const highlight = (await searchParams)?.highlight as string;
-  const question = await getQuestionById(highlight);
+  const question = highlight ? await getQuestionById(highlight) : null;
 
-  return {
-    title: `question`,
+  const profileMetadata: Metadata = {
+    title: `${user?.name} (@${user?.username}) / Curiously`,
+    description: user?.bio || '',
+    openGraph: {
+      title: `${user?.name} (@${user?.username}) / Curiously`,
+      description: user?.bio || '',
+      images: [
+        {
+          url: `https://curiously.vercel.app/api/og/?username=${user?.username}`,
+          width: 1200,
+          height: 630,
+          alt: `${user?.name} (@${user?.username})`,
+        },
+      ],
+    },
+  };
+  const questionMetadata: Metadata = {
+    title: `Curiously`,
     description: question?.content || 'Check out this question!',
     openGraph: {
       title: `question`,
       description: question?.content || 'Check out this question!',
       images: [
         {
-          url: `https://curiously.vercel.app/api/og?q=${encodeURIComponent(
+          url: `https://curiously.vercel.app/api/og/question?q=${encodeURIComponent(
             question?.content || '',
           )}`,
           width: 1200,
@@ -52,7 +72,7 @@ export async function generateMetadata({
       description: question?.content || 'Check out this question!',
       images: [
         {
-          url: `https://curiously.vercel.app/api/og?q=${encodeURIComponent(
+          url: `https://curiously.vercel.app/api/og/question?q=${encodeURIComponent(
             question?.content || '',
           )}`,
           width: 1200,
@@ -61,7 +81,8 @@ export async function generateMetadata({
         },
       ],
     },
-  } as Metadata;
+  };
+  return highlight ? questionMetadata : profileMetadata;
 }
 
 export default async function UserPage({
@@ -83,7 +104,7 @@ export default async function UserPage({
   return (
     <>
       <Suspense fallback={<MainPageSkeleton />}>
-        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+        <div className="min-h-screen bg-gradient-to-b from-[hsl(var(--background-cream))] to-[hsl(var(--background-darker-cream))]">
           <div className="mx-auto max-w-7xl px-4 py-8">
             <div className="flex flex-row items-center space-x-2">
               <Button variant="outline" className="outline-2">

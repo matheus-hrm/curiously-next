@@ -33,6 +33,12 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+
+    --main-blue: 187 42% 48%;
+    --main-green: 164.04, 54.02%, 65.88%;
+    --main-green-dark: 164.04, 54.02%, 50.88%;
+    --background-cream: 40 20% 95%;
+    --background-darker-cream: 53.33, 24.32%, 92.75%;
   }
   .dark {
     --background: 240 10% 3.9%;

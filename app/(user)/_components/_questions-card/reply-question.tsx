@@ -41,16 +41,15 @@ export default function ReplyQuestion({ question }: QuestionProp) {
   return (
     <>
       <Button
-        className="bg-black/70 text-white border-white border-2 hover:bg-black/50 hover:text-white"
-        variant="outline"
+        className="text-black hover:bg-black/10 "
+        variant="ghost"
         onClick={() => setReplying(!replying)}
       >
         <MessageCircle className="mr-1 h-4 w-4" />
-        Reply
       </Button>
       {replying && (
         <Modal isOpen={replying} onClose={() => setReplying(false)}>
-          <div className="flex flex-col justify-center items-start mt-5 py-4 bg-white bg-opacity-10 backdrop-blur-lg rounded-lg p-4">
+          <div className="flex flex-col justify-center items-start mt-5 py-4 bg-opacity-10 backdrop-blur-xl rounded-lg p-4">
             <div className="flex flex-row items-center justify-center">
               <Avatar className="w-10 h-10">
                 {question.sender?.profilePicture ? (
@@ -75,7 +74,7 @@ export default function ReplyQuestion({ question }: QuestionProp) {
           />
           <Button
             variant="default"
-            className="mt-4"
+            className="mt-4 bg-[hsl(var(--main-green))] hover:bg-[hsl(var(--main-green-dark))]"
             onClick={() => handleAnswerQuestion(question)}
           >
             Enviar
