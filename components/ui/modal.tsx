@@ -33,7 +33,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
 
   return (
     <div
-      className={`w-full fixed inset-0 z-50 flex items-center justify-center transition-all ${
+      className={`w-full fixed inset-0 z-30 flex items-center justify-center transition-all bg-inherit ${
         isVisible ? 'modal-open' : 'modal-close'
       }`}
       onClick={handleClose}
@@ -45,7 +45,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
       }}
     >
       <div
-        className="relative flex flex-col justify-center bg-inherit bg-opacity-100 p-6 rounded-lg shadow-2xl mx-4 max-w-md w-full sm:w-3/4 md:w-2/4 lg:w-1/3"
+        className="relative bg-inherit flex flex-col justify-center bg-opacity-100 p-6 rounded-lg shadow-2xl mx-4 max-w-md w-full sm:w-3/4 md:w-2/4 lg:w-1/3"
         onClick={(e) => e.stopPropagation()}
       >
         <button

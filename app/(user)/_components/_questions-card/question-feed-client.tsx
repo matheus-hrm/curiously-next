@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import QuestionCardClient from './question-card-client';
 import { toast } from '@/hooks/use-toast';
 
@@ -39,30 +39,44 @@ export default function QuestionFeedClient({
   const [questions, setQuestions] = useState(initialQuestions);
   const [answers] = useState(initialAnswers);
 
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const newQuestions = await fetchQuestions(user.username);
-      if (newQuestions.length > questions.length) {
+  const fetchQuestions = useCallback(async (username: string) => {
+    const response = await fetch(`/api/questions?username=${username}`);
+    const data = await response.json();
+    return data.questions;
+  }, []);
+
+  const showToastNotification = useCallback(
+    (newLength: number) => {
+      if (newLength > questions.length && owner) {
         toast({
           title: 'Notificacao',
           description: 'Voce tem novas perguntas!',
           variant: 'default',
         });
       }
+    },
+    [questions.length, owner],
+  );
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const newQuestions = await fetchQuestions(user.username);
+      showToastNotification(newQuestions.length);
       setQuestions(newQuestions);
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [user.username, questions.length]);
-
-  const fetchQuestions = async (username: string) => {
-    const response = await fetch(`/api/questions?username=${username}`);
-    const data = await response.json();
-    return data.questions;
-  };
+  }, [user.username, fetchQuestions, showToastNotification]);
 
   return (
     <>
+      {questions.length === 0 && (
+        <div className="flex items-center justify-center h-full">
+          <p className="text-black/40 sm:text-md lg:text-4xl text-center">
+            Nenhuma pergunta ainda :(
+          </p>
+        </div>
+      )}
       {questions.map((question) => {
         const questionAnswers = answers.filter(
           (answer) => answer.questionId === question.id,

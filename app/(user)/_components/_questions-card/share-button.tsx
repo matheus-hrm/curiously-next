@@ -63,7 +63,7 @@ export default function ShareButton({
       <Button
         variant={'ghost'}
         onClick={() => setSharing(true)}
-        className="hover:bg-black/10"
+        className="hover:text-[hsl(var(--main-green-dark))]"
       >
         <Share2 className="w-4 h-4" />
       </Button>
@@ -71,7 +71,7 @@ export default function ShareButton({
       {sharing && (
         <Modal isOpen={sharing} onClose={() => setSharing(false)}>
           <div className="flex flex-col justify-center items-start  mt-5 bg-white bg-opacity-10 backdrop-blur-lg rounded-lg p-5">
-            <p className="text-xl">Compartilhar</p>
+            <p className="text-xl mb-6">Compartilhar</p>
             <div className="flex flex-row items-center justify-center space-x-5">
               <button onClick={handleTwitterShare} className="my-2 ">
                 <SVGIcons.X className="w-8 h-8" />

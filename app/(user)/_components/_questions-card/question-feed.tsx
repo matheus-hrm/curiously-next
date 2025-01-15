@@ -37,7 +37,7 @@ export default async function QuestionFeed({
   const owner = await IsProfileOwner(user.username);
 
   return (
-    <div className="relative">
+    <div className="relative ">
       <Card className="backdrop-blur-lg bg-white/80 border-none shadow-lg">
         <CardContent className="p-6">
           <div className="h-[calc(100vh-16rem)] overflow-y-auto pr-4">

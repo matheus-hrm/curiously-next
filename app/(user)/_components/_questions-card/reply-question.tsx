@@ -41,7 +41,7 @@ export default function ReplyQuestion({ question }: QuestionProp) {
   return (
     <>
       <Button
-        className="text-black hover:bg-black/10 "
+        className="text-black hover:text-[hsl(var(--main-green-dark))]"
         variant="ghost"
         onClick={() => setReplying(!replying)}
       >

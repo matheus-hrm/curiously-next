@@ -1,11 +1,12 @@
-import { auth } from '@/lib/auth';
-import { getUserById } from './(user)/[username]/actions';
-import { prisma } from '@/prisma/prisma';
-import { Input } from '@/components/ui/input';
-import FeedAnswerCard from './(home)/_components/feed-card';
-import { MainLogo } from '@/components/main-logo';
-import SignInPage from './auth/signin/page';
 import ProfileTooltip from './(home)/_components/profile-tooltip';
+import FeedAnswerCard from './(home)/_components/feed-card';
+import { getUserById } from './(user)/[username]/actions';
+import { MainLogo } from '@/components/main-logo';
+import { Button } from '@/components/ui/button';
+import SignInPage from './auth/signin/page';
+import { prisma } from '@/prisma/prisma';
+import { auth } from '@/lib/auth';
+import Link from 'next/link';
 
 type HomeProps = {
   feed: {
@@ -34,13 +35,20 @@ type HomeProps = {
 
 async function Home({ feed, user }: HomeProps) {
   return (
-    <div className="flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 h-screen">
+    <div className="flex flex-col bg-gradient-to-b from-[hsl(var(--background-cream))] to-[hsl(var(--background-darker-cream))] h-screen">
       <div className="flex flex-row justify-between items-center mb-24">
         <div className="">
           <MainLogo />
         </div>
         <div className="flex flex-row justify-center items-center m-4 space-x-4">
-          <Input placeholder="Search" className="rounded-lg p-2"></Input>
+          <Button variant="default" className="outline-2">
+            <Link
+              href={`/${user.username}`}
+              className="flex flex-row items-center"
+            >
+              <p>Meu perfil</p>
+            </Link>
+          </Button>
           <ProfileTooltip user={user} />
         </div>
       </div>

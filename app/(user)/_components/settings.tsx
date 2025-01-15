@@ -10,10 +10,31 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { AtSignIcon, LogOut, SettingsIcon } from 'lucide-react';
 import { signOut } from 'next-auth/react';
+import { useState } from 'react';
+import ChangeHandle from './change-handle';
 
-export default function Settings() {
+type SettingsProps = {
+  username: string;
+};
+
+export default function Settings({ username }: SettingsProps) {
+  const [changeUsername, setChangeUsername] = useState(false);
+
+  function setModalClose() {
+    setChangeUsername(false);
+  }
+
   return (
     <>
+      {changeUsername && (
+        <div className="bg-white">
+          <ChangeHandle
+            username={username}
+            isOpen={changeUsername}
+            onClose={setModalClose}
+          />
+        </div>
+      )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -24,9 +45,8 @@ export default function Settings() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setChangeUsername(true)}>
             <p className=" text-md">Mudar username</p>
-            {/* TODO: IMPLEMENT */}
             <AtSignIcon className="w-12 mr-2 size-14" aria-hidden="true" />
           </DropdownMenuItem>
           <DropdownMenuSeparator className="bg-black/10" />

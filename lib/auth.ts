@@ -1,21 +1,12 @@
-import NextAuth, { CredentialsSignin, Account, Profile } from 'next-auth';
+import NextAuth, { Account, Profile } from 'next-auth';
 import Google from 'next-auth/providers/google';
 import Discord from 'next-auth/providers/discord';
 import { prisma } from '@/prisma/prisma';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 
-class InvalidLoginError extends CredentialsSignin {
-  code = 'Invalid username or password';
-}
-
-//TODO: Make function to send current profile picture to cloudinary so the cdn does not expires someday
-//TODO: CHANGE FROM CREDENTIALS TO MAGIC LINK
-// ADD FORGOT PASSWORD FLOW
-
 export const { auth, handlers, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
   adapter: PrismaAdapter(prisma),
-  debug: true,
   pages: {
     signIn: '/auth/signin',
     signOut: '/auth/signout',

@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { formatTime } from '@/lib/utils';
+import { formatTime } from '@/lib/utils/formatTime';
 import { User } from 'lucide-react';
 import Link from 'next/link';
 
@@ -32,7 +32,6 @@ export default function FeedAnswerCard({
   answer,
   follower,
 }: FeedCardProps) {
-  console.log(sender, answer, follower);
   return (
     <>
       <Card className="w-min-lg m-6 border-2 p-2  backdrop-blur-lg bg-white/80 border-none shadow-md">

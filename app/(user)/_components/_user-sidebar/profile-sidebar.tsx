@@ -54,7 +54,7 @@ export function ProfileSidebar({
               </Avatar>
             ) : (
               <div className="h-32 w-32 mb-4 flex items-center justify-center rounded-full border-2 border-zinc-300">
-                <User className="h-24 w-24 text-gray-500" aria-hidden="true" />
+                <User className="h-20 w-20 text-gray-500" aria-hidden="true" />
               </div>
             )}
             <h2 className="text-xl font-semibold">{user.name}</h2>

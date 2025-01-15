@@ -1,16 +1,14 @@
-import localFont from 'next/font/local';
+import Image from 'next/image';
+import Logo from '@/public/Curiously.png';
 
-const kiwi = localFont({
-  src: '../app/fonts/KiwiMaru-Medium.ttf',
-  variable: '--font-kiwi',
-  weight: '400',
-});
+type MainLogoProps = {
+  size?: number;
+};
 
-export const MainLogo = () => {
+export const MainLogo = ({ size }: MainLogoProps) => {
   return (
-    <div className="text-xl  m-4 pl-2 flex flex-col justify-center items-center">
-      <p className={kiwi.className}>curiously</p>
-      {/* <p className="text-xl font-mono text-black">nanashi</p> */}
+    <div className="m-2 pl-1 text-center sm:text-start sm:m-4 sm:pl-2">
+      <Image src={Logo} width={size ? size : 100} alt={''} />
     </div>
   );
 };

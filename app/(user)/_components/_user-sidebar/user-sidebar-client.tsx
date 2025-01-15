@@ -36,9 +36,6 @@ export default function UserSidebarClient({
 }: UserSidebarClientProps) {
   const [isEditing, setIsEditing] = useState(false);
 
-  console.log(user.followers);
-  console.log(user.following);
-
   const handleEdit = () => setIsEditing(true);
   const handleClose = () => setIsEditing(false);
 

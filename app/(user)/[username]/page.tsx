@@ -16,6 +16,8 @@ import {
   getUser,
   getUserQuestions,
 } from './actions';
+import { MainLogo } from '@/components/main-logo';
+import Footer from '@/components/footer';
 
 type Props = {
   searchParams: Promise<{
@@ -95,7 +97,13 @@ export default async function UserPage({
     return <UserNotFound />;
   }
   const session = await auth();
-  const loggedUser = session?.user;
+  const loggedUser = session?.user as {
+    id: string;
+    username: string;
+    name: string;
+    email: string;
+  };
+
   const questions = await getUserQuestions(user.id);
   const answers = await getAllAnswers(user.id);
   const following = await getFollowingUsers(user.username);
@@ -105,16 +113,21 @@ export default async function UserPage({
     <>
       <Suspense fallback={<MainPageSkeleton />}>
         <div className="min-h-screen bg-gradient-to-b from-[hsl(var(--background-cream))] to-[hsl(var(--background-darker-cream))]">
-          <div className="mx-auto max-w-7xl px-4 py-8">
+          <div className=" sm:fixed sm:w-auto">
+            <MainLogo size={110} />
+          </div>
+          <div className="mx-auto max-w-7xl px-4 py-4 sm:py-8">
             <div className="flex flex-row items-center space-x-2">
               <Button variant="outline" className="outline-2">
                 <Link href={'/'} className="flex flex-row items-center">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  <ArrowLeft className="mr-2 h-4 w-4 " />
                   Voltar
                 </Link>
               </Button>
               <div className="flex item-center justify-center">
-                {loggedUser && loggedUser.id === user.id && <Settings />}
+                {loggedUser && loggedUser.id === user.id && (
+                  <Settings username={loggedUser.username} />
+                )}
                 {!loggedUser && (
                   <Button variant="link" className=" bg-black text-white ml-2">
                     <Link href={'/auth/signin'}>Login</Link>
@@ -123,20 +136,36 @@ export default async function UserPage({
               </div>
             </div>
             <div className="grid gap-6 md:grid-cols-[300px_1fr]">
-              <UserSidebar
-                user={{
-                  name: user.name,
-                  id: user.id,
-                  username: user.username,
-                  avatar: user.profilePicture || '',
-                  bio: user.bio || '',
-                  socials: user.socials || [],
-                  followers: followers || [],
-                  following: following || [],
-                }}
-                isLogged={loggedUser?.id === user.id}
-                loggedUserId={loggedUser?.id}
-              />
+              <div className="flex flex-col  w-full ">
+                <UserSidebar
+                  user={{
+                    name: user.name,
+                    id: user.id,
+                    username: user.username,
+                    avatar: user.profilePicture || '',
+                    bio: user.bio || '',
+                    socials: user.socials || [],
+                    followers: followers || [],
+                    following: following || [],
+                  }}
+                  isLogged={loggedUser?.id === user.id}
+                  loggedUserId={loggedUser?.id}
+                />
+                <div className="hidden md:flex md:h-full md:mt-10 md:flex-col md:justify-between md:space-y-5 md:text-center">
+                  <Footer />
+                  <Link
+                    target={'_blank'}
+                    href={'https://github.com/matheus-hrm'}
+                  >
+                    <p className="text-sm  text-stone-600/60">
+                      desenvolvido por{' '}
+                      <u className="no-underline hover:underline">
+                        matheus-hrm
+                      </u>
+                    </p>
+                  </Link>
+                </div>
+              </div>
               <QuestionFeed
                 questions={questions}
                 user={{
@@ -160,6 +189,16 @@ export default async function UserPage({
               ) : (
                 <FloatingCard receiverId={user.id} loggedUserId={null} />
               )}
+            </div>
+            {/* Mobile footer */}
+            <div className="md:hidden mb-20 md:mb-0 mt-10 flex flex-col justify-between space-y-5 text-center">
+              <Footer />
+              <Link target={'_blank'} href={'https://github.com/matheus-hrm'}>
+                <p className="text-sm text-stone-600/60">
+                  desenvolvido por{' '}
+                  <u className="no-underline hover:underline">matheus-hrm</u>
+                </p>
+              </Link>
             </div>
           </div>
         </div>

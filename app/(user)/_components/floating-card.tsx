@@ -50,15 +50,15 @@ export default function FloatingCard({
       );
       setQuestion('');
       toast({
-        title: 'Success',
-        description: 'Question sent successfully',
+        title: 'Sucesso',
+        description: 'Sua pergunta foi enviada',
       });
     } catch (error) {
       setError(true);
       toast({
-        title: 'Error',
+        title: 'Erro',
         description:
-          error instanceof Error ? error.message : 'Failed to send question',
+          error instanceof Error ? error.message : 'Erro ao enviar pergunta',
         variant: 'destructive',
       });
     } finally {
@@ -68,18 +68,18 @@ export default function FloatingCard({
 
   return (
     <div
-      className={`fixed bottom-8  md:left-1/3 lg:left-1/3  w-full max-w-md md:max-w-xl lg:max-w-3xl  px-4 transition-all duration-300 ease-in-out ${
+      className={`fixed bottom-2  sm:bottom-8 md:left-1/3 lg:left-1/3 md:w-full max-w-sm md:max-w-xl lg:max-w-4xl md:px-8 transition-all duration-300 ease-in-out ${
         error ? 'animate-shake' : ''
       }`}
       style={{ position: 'fixed' }}
     >
-      <Card className="backdrop-blur-lg bg-white border-none shadow-lg">
-        <CardContent className="p-4 flex flex-row items-center justify-center">
+      <Card className="backdrop-blur-lg bg-white border-none shadow-lg  ">
+        <CardContent className="p-2  sm:p-4 w-full flex flex-row items-center justify-center rounded-lg sm:rounded-none border-stone-400 border-2 sm:border-none">
           <Input
             placeholder={
               error ? 'Mensagem não pode ser vazia' : 'Pergunte algo...'
             }
-            className="w-full bg-transparent border-none shadow-none focus-visible:ring-0 text-lg"
+            className="pr-8 sm:pr-0 sm:mr-4 sm:w-full bg-transparent border-none shadow-none focus-visible:ring-0 text-sm md:text-lg"
             type="text"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
@@ -89,16 +89,16 @@ export default function FloatingCard({
               <TooltipTrigger asChild>
                 <Label
                   htmlFor="anon"
-                  className="flex flex-row items-center justify-center  gap-2"
+                  className="flex flex-row items-center justify-center gap-1 md:gap-2"
                 >
                   <Switch
                     id="anon"
                     onCheckedChange={() => setIsAnonymous(!isAnonymous)}
                     className=""
                   />
-                  <div className="mr-2">
+                  <div className="mr-1 md:mr-2">
                     {isAnonymous ? (
-                      <EyeClosed className="w-4" />
+                      <EyeClosed className="w-2 sm:w-4" />
                     ) : (
                       <Eye className="w-4" />
                     )}

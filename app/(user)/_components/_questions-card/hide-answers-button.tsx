@@ -25,18 +25,15 @@ export default function HideAnswersButton({
         variant="ghost"
         size="sm"
         onClick={handleToggle}
-        className="hover:bg-black/10"
+        className=" hover:bg-opacity-10 rounded-lg hover:text-[hsl(var(--main-green-dark))]"
       >
-        <>
-          <ChevronDown
-            className={`mr-1 h-4 w-4 ${
-              showAnswers
-                ? 'transition-all rotate-0 duration-200 ease-in-out'
-                : '-rotate-90 transition-all duration-200 ease-in-out'
-            }`}
-          />
-        </>
-
+        <ChevronDown
+          className={`mr-1 h-4 w-4  ${
+            showAnswers
+              ? 'transition-all rotate-0 duration-200 ease-in-out'
+              : '-rotate-90 transition-all duration-200 ease-in-out'
+          }`}
+        />
         <p className="font-thin text-md">{count}</p>
       </Button>
     </div>

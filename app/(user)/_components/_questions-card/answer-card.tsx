@@ -12,7 +12,7 @@ type AnswerCardProps = {
 
 export default function AnswerCard({ answer }: AnswerCardProps) {
   return (
-    <div className=" pl-6 border-l mt-4">
+    <div className="pl-2 sm:pl-6 border-l mt-4">
       <div className="flex items-start gap-2 mb-2">
         <Avatar>
           <AvatarImage src={answer.profilePicture} alt={answer.username} />

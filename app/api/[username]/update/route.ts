@@ -6,6 +6,7 @@ const updateProfileSchema = z.object({
   name: z.string().min(3).max(20).optional(),
   bio: z.string().optional(),
   socials: z.array(z.string().url()).optional(),
+  username: z.string().min(3).max(15).optional(),
 });
 
 export async function PUT(
@@ -16,7 +17,7 @@ export async function PUT(
   try {
     const body = await req.json();
     const validatedData = updateProfileSchema.parse(body);
-    console.log(username)
+    console.log(username);
     const updatedUser = await prisma.user.update({
       where: {
         username: username,
@@ -25,6 +26,7 @@ export async function PUT(
         ...(validatedData.name && { name: validatedData.name }),
         ...(validatedData.bio && { bio: validatedData.bio }),
         ...(validatedData.socials && { socials: validatedData.socials }),
+        ...(validatedData.username && { username: validatedData.username }),
       },
     });
 

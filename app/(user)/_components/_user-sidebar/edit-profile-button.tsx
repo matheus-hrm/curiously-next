@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { UserPen } from 'lucide-react';
+import { Settings2 } from 'lucide-react';
 
 export default function EditProfileButton({
   onEditProfile,
@@ -16,7 +16,7 @@ export default function EditProfileButton({
         onClick={onEditProfile}
       >
         <p>Editar perfil</p>
-        <UserPen className="ml-2 h-4 w-4" />
+        <Settings2 className="h-4 w-4" />
       </Button>
     </>
   );

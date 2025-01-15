@@ -33,7 +33,7 @@ const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
-  const [imageHover, setImageHover] = useState(false);
+  const [, setImageHover] = useState(false);
   const [newName, setNewName] = useState(user.name);
   const [newBio, setNewBio] = useState(user.bio);
   const [, setUploadError] = useState<string | null>(null);
@@ -52,9 +52,10 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
       setNewSocial('');
     } catch {
       toast({
-        title: 'Invalid URL',
-        description: 'Please enter a valid URL',
-        variant: 'destructive',
+        title: 'URL inválido',
+        description:
+          'Por favor insira um URL válido... como https://example.com',
+        variant: 'default',
       });
     }
   };
@@ -92,16 +93,16 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
       }
 
       toast({
-        title: 'Profile updated',
-        description: 'Your profile has been updated successfully',
+        title: 'Perfil atualizado',
+        description: 'Seu perfil foi atualizado com sucesso',
       });
       onClose();
     } catch (error) {
       console.log(error);
       setUploadError('An error occurred');
       toast({
-        title: 'An error occurred',
-        description: 'Failed to update profile',
+        title: 'Ocorreu um erro',
+        description: 'Falha ao atualizar o perfil',
         variant: 'destructive',
       });
     } finally {
@@ -190,15 +191,14 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
                     src={user.avatar}
                     alt={user.name}
                   />
-                  {imageHover && (
-                    <Button
-                      variant="outline"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="absolute h-32 inset-0 flex items-center justify-center bg-black/30 transition-all duration-400 hover:bg-black/60 border-0 hover:text-white"
-                    >
-                      <ImageUp className="h-8 w-8" aria-hidden="true" />
-                    </Button>
-                  )}
+
+                  <Button
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute h-32 inset-0 flex items-center justify-center  transition-all duration-400 bg-black/60 border-0 text-white hover:bg-black/80 hover:text-white"
+                  >
+                    <ImageUp className="h-8 w-8" aria-hidden="true" />
+                  </Button>
                 </Avatar>
               </>
             )}
@@ -228,7 +228,7 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
           <div className="space-y-4">
             <Textarea
               className="w-full h-24 text-start  resize-none"
-              placeholder={user.bio}
+              placeholder={user.bio ? user.bio : 'Adicione uma bio...'}
               onChange={(e) => setNewBio(e.target.value)}
             />
           </div>
@@ -275,7 +275,7 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
           {!isLoading ? (
             <div className="flex flex-row justify-evenly space-x-5 text-white/90">
               <Button
-                className="bg-green-800 flex flex-row items-center justify-center"
+                className="bg-[hsl(var(--main-green))] hover:bg-[hsl(var(--main-green-dark))] flex flex-row items-center justify-center"
                 variant="default"
                 onClick={handleUpdateProfile}
               >
@@ -283,7 +283,7 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
                 <p className="text-sm mr-3">Salvar</p>
               </Button>
               <Button
-                className="bg-red-800 hover:bg-red-950 flex flex-row items-center justify-center"
+                className="bg-red-400 hover:bg-red-500/90 flex flex-row items-center justify-center"
                 variant="default"
                 onClick={onClose}
               >
