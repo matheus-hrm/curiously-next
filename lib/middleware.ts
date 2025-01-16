@@ -1,36 +1,25 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { verifyToken } from './jwt';
+import { auth } from '@/lib/auth';
 
-const publicRoutes = [
-  '/auth/signin',
-  '/auth/signup',
-  '/error',
-  '/verify-request',
-];
+const protectedRoutes = ['/middleware', '/api/*'];
 
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+export default async function middleware(request: NextRequest) {
+  const session = await auth();
 
-  if (publicRoutes.includes(pathname)) {
-    return NextResponse.next();
+  const isProtected = protectedRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route),
+  );
+
+  if (!session && isProtected) {
+    return NextResponse.redirect(
+      new URL('/', request.nextUrl.origin).toString(),
+    );
   }
 
-  const token = request.cookies.get('next-auth.session-token')?.value;
-
-  if (!token) {
-    return NextResponse.redirect(new URL('/auth/signin', request.url));
-  }
-
-  try {
-    await verifyToken(token);
-    return NextResponse.next();
-  } catch (e) {
-    console.error(e);
-    return NextResponse.redirect(new URL('/auth/signin', request.url));
-  }
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|public).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };

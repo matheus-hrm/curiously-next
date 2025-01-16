@@ -7,6 +7,7 @@ import SignInPage from './auth/signin/page';
 import { prisma } from '@/prisma/prisma';
 import { auth } from '@/lib/auth';
 import Link from 'next/link';
+import Settings from './(user)/_components/settings';
 
 type HomeProps = {
   feed: {
@@ -49,6 +50,7 @@ async function Home({ feed, user }: HomeProps) {
               <p>Meu perfil</p>
             </Link>
           </Button>
+          <Settings username={user.username} />
           <ProfileTooltip user={user} />
         </div>
       </div>

@@ -1,4 +1,5 @@
 'use server';
+import { auth } from '@/lib/auth';
 import { prisma } from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -13,6 +14,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { userId, profileId } = followUserSchema.parse(body);
 
+    const session = (await auth()) as { user?: { id: string } };
+
+    if (!session?.user || session.user.id !== userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
     if (!userId || !profileId) {
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
     }

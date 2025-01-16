@@ -1,11 +1,24 @@
 import { prisma } from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/lib/auth';
 
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ username: string; id: string }> },
 ) {
-  const id = (await params).id;
+
+  const { username, id } = await params;
+  const session = await auth();
+  if (session == null) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+  }
+
+  const user = session.user as { username: string };
+
+  if (user.username !== username) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+  }
+
   if (!id) {
     return NextResponse.json({ error: 'Missing question ID' }, { status: 400 });
   }

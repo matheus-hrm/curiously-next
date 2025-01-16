@@ -43,7 +43,7 @@ export async function generateMetadata({
       description: user?.bio || '',
       images: [
         {
-          url: `https://curiously.vercel.app/api/og/?username=${user?.username}`,
+          url: `https://curiously.vercel.app/api/og/?u=${user?.username}`,
           width: 1200,
           height: 630,
           alt: `${user?.name} (@${user?.username})`,

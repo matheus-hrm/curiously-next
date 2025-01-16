@@ -11,6 +11,9 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ username: string }> },
 ) {
+  const username = (await params).username;
+  
+
   try {
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_NAME,
@@ -20,7 +23,6 @@ export async function POST(
 
     const fileData = await req.formData();
     const file = fileData.get('file') as File;
-    const username = (await params).username;
     if (!file) {
       throw new Error('No file selected');
     }

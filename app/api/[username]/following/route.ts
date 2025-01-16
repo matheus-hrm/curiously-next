@@ -1,3 +1,4 @@
+import { auth } from '@/lib/auth';
 import { prisma } from '@/prisma/prisma';
 import { NextResponse } from 'next/server';
 
@@ -7,6 +8,15 @@ export async function GET(
 ) {
   try {
     const username = (await params).username;
+    if (!username) {
+      return NextResponse.json({ error: 'Missing username' }, { status: 400 });
+    }
+    const session = (await auth()) as { user?: { username: string } };
+
+    if (!session?.user || session.user.username !== username) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
     const user = await prisma.user.findUnique({
       where: { username: username },
       include: {

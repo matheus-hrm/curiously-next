@@ -1,5 +1,6 @@
 import { getUser } from '@/app/(user)/[username]/actions';
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/lib/auth';
 
 export async function GET(
   req: NextRequest,
@@ -16,6 +17,14 @@ export async function GET(
         status: 400,
       },
     );
+  }
+  const session = await auth();
+  if (session == null) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+  }
+  const user = session.user as { username: string };
+  if (user.username !== username) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
