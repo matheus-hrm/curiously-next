@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { debounce } from '@/lib/utils/debounce';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -77,16 +77,29 @@ export default function ChangeHandle({
       setIsLoading(false);
     }
   };
-  const debouncedValidateHandle = useCallback(
-    (handle: string) => {
-      debounce(validateHandle, 1000)(handle);
-    },
-    [handleSchema, setIsLoading, setIsValid, setZodError],
-  );
-  useEffect(() => {
-    debouncedValidateHandle(newHandle);
-  }, [newHandle, debouncedValidateHandle]);
 
+  const timeoutRef = useRef<NodeJS.Timeout>();
+
+  useEffect(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    if (newHandle === '') {
+      setIsValid('default');
+      return;
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      validateHandle(newHandle);
+    }, 1000);
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [newHandle]);
   const submitHandle = async (newHandle: string) => {
     const response = await fetch(`/api/${username}/update`, {
       method: 'PUT',
