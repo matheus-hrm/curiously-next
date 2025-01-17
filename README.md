@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Curiously - Social Q&A Platform
 
-## Getting Started
+A modern social Q&A platform built with Next.js 15, where users can ask and answer questions in an engaging way.
 
-First, run the development server:
+## 🏗️ Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework:** [Next.js 15](https://nextjs.org/) (App Router)
+- **Authentication:** [NextAuth v5](https://authjs.dev/) with Google & Discord OAuth
+- **Database:** [Prisma](https://prisma.io) with Neon Serverless Postgres
+- **Styling:** [Tailwind CSS](https://tailwindcss.com) & [shadcn/ui](https://ui.shadcn.com/)
+- **Image Hosting:** [Cloudinary](https://cloudinary.com)
+- **Deployment:** [Vercel](https://vercel.com)
+
+## 📁 Project Structure
+├── app/
+│   ├── (home)/                 # Home routes
+│   ├── (user)/                 # User profile routes
+│   ├── api/                    # API endpoints
+│   │   ├── [username]/
+│   │   │   ├── follow/        # Follow/unfollow actions
+│   │   │   ├── followers/     # Get user followers
+│   │   │   ├── following/     # Get user following
+│   │   │   ├── update/        # Profile updates
+│   │   ├── auth/              # Auth endpoints
+│   │   ├── questions/         # Question management
+│   │   └── og/                # OpenGraph image generation
+├── components/                 # Reusable components
+├── hooks/                     # Custom React hooks
+├── lib/                       # Utility functions
+└── prisma/                    # Database configuration
+
+## 🚀 Key Features
+
+### Authentication
+- OAuth sign-in with Google and Discord
+- Protected API routes and middleware
+- Session management with NextAuth v5
+
+### User Profiles
+- Custom usernames and profile pictures
+- Bio and social links
+- Follow/unfollow system
+- Activity feed of questions and answers
+
+### Q&A System
+- Ask and answer questions
+- Rich text formatting
+- Question visibility controls
+- Real-time updates
+
+### Social Features
+- Follow other users
+- View follower/following lists
+- Activity feed
+- Social sharing
+
+### API Routes
+```typescript
+// User Management
+GET    /api/[username]              # Get user profile
+PUT    /api/[username]/update       # Update profile
+POST   /api/[username]/follow       # Follow user
+GET    /api/[username]/followers    # Get followers
+GET    /api/[username]/following    # Get following
+
+// Questions
+GET    /api/questions               # Get questions
+POST   /api/questions               # Create question
+PUT    /api/questions/[id]          # Update question
+DELETE /api/questions/[id]          # Delete question
+
+// Authentication
+POST   /api/auth/[...nextauth]      # Auth endpoints
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 💡 Technical Insights
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Dynamic OG Images**: Custom OpenGraph images generated on-the-fly using [@vercel/og](https://vercel.com/docs/concepts/functions/edge-functions/og-image-generation)
+- **Edge Runtime**: API routes utilizing Edge Runtime for optimal performance
+- **Prisma Integration**: Type-safe database queries with Prisma ORM
+- **File Upload**: Cloudinary integration for avatar uploads
+- **Type Safety**: Full TypeScript support across the codebase
+- **Middleware**: Protected routes and API endpoints using Next.js middleware
+- **SEO Optimization**: Dynamic metadata and sitemap generation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🏃‍♂️ Running Locally
 
-## Learn More
+1. Clone the repository
+```bash
+git clone https://github.com/matheus-hrm/curiously-next.git
+```
 
-To learn more about Next.js, take a look at the following resources:
+2. Install dependencies
+```bash
+pnpm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Create a 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+.env
 
-## Deploy on Vercel
+ file with required environment variables
+```
+AUTH_GOOGLE_ID
+AUTH_DISCORD_ID
+CLOUDINARY_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. Start the development server
+```bash
+pnpm dev
+```
