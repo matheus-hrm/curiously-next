@@ -12,22 +12,31 @@ A modern social Q&A platform built with Next.js 15, where users can ask and answ
 - **Deployment:** [Vercel](https://vercel.com)
 
 ## 📁 Project Structure
-├── app/
-│   ├── (home)/                 # Home routes
-│   ├── (user)/                 # User profile routes
-│   ├── api/                    # API endpoints
-│   │   ├── [username]/
-│   │   │   ├── follow/        # Follow/unfollow actions
-│   │   │   ├── followers/     # Get user followers
-│   │   │   ├── following/     # Get user following
-│   │   │   ├── update/        # Profile updates
-│   │   ├── auth/              # Auth endpoints
-│   │   ├── questions/         # Question management
-│   │   └── og/                # OpenGraph image generation
-├── components/                 # Reusable components
-├── hooks/                     # Custom React hooks
-├── lib/                       # Utility functions
-└── prisma/                    # Database configuration
+├── 📁 app/                      # Next.js App Router Directory
+│   ├── 📁 (auth)/               # Auth Group Routes
+│   │   ├── signin/              # Sign In Pages
+│   │   └── _components/         # Auth Components
+│   ├── 📁 (home)/               # Home Group Routes
+│   │   ├── page.tsx             # Landing Page
+│   │   └── _components/         # Home Components
+│   ├── 📁 (user)/               # User Group Routes
+│   │   ├── [username]/          # Dynamic User Routes
+│   │   └── _components/         # User Components
+│   └── 📁 api/                  # API Routes
+│       ├── auth/                # Auth API
+│       ├── questions/           # Questions API
+│       └── users/               # Users API
+├── 📁 components/               # Shared Components
+│   ├── ui/                      # UI Components
+│   └── Icons/                   # SVG Icons
+├── 📁 lib/                      # Utility Functions
+│   ├── auth.ts                  # Auth Utils
+│   ├── db.ts                    # Database Utils
+│   └── utils.ts                 # General Utils
+├── 📁 prisma/                   # Database Schema
+│   └── schema.prisma            # Prisma Schema
+├── 📁 public/                   # Static Assets
+└── 📁 styles/                   # Global Styles
 
 ## 🚀 Key Features
 
