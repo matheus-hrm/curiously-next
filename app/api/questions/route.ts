@@ -9,7 +9,13 @@ export async function GET(req: NextRequest) {
 
   const session = (await auth()) as { user?: { username: string } };
 
-  if (!session?.user || session.user.username !== username) {
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+  }
+
+  console.log(session.user);
+
+  if (session.user.username !== username) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 

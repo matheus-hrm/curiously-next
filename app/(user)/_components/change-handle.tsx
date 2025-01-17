@@ -1,7 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { debounce } from '@/lib/utils/debounce';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { redirect } from 'next/navigation';
@@ -99,7 +98,7 @@ export default function ChangeHandle({
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [newHandle]);
+  }, [newHandle, validateHandle]);
   const submitHandle = async (newHandle: string) => {
     const response = await fetch(`/api/${username}/update`, {
       method: 'PUT',
