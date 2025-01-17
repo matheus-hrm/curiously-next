@@ -60,7 +60,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
               await prisma.user.create({
                 data: {
                   email: profile.email,
-                  username: String(profile?.username),
+                  username: String(profile?.username).split(' ').join('').toLowerCase(),
                   name: String(profile?.global_name),
                   hashedPassword: '',
                   profilePicture: String(profile?.image_url),
@@ -80,7 +80,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
               await prisma.user.create({
                 data: {
                   email: profile?.email,
-                  username: String(profile?.name),
+                  username: String(profile?.name?.split(' ').join('').toLowerCase()),
                   name: String(profile?.name),
                   hashedPassword: '',
                   profilePicture: String(profile?.picture),
