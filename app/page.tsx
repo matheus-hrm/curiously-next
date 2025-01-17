@@ -117,13 +117,29 @@ async function GetHomePageFeed(userId: string) {
     where: {
       OR: [
         {
-          authorId: {
-            in: following.map((user) => user.id),
+          AND: [
+            {
+              authorId: {
+                in: following.map((user) => user.id),
+              },
+            },
+            {
+              question: {
+                receiverId: {
+                  in: following.map((user) => user.id),
+                },
+              },
+            },
+          ],
+        },
+        {
+          question: {
+            authorId: userId,
           },
         },
         {
           question: {
-            isAnonymous: true,
+            receiverId: userId,
           },
         },
       ],

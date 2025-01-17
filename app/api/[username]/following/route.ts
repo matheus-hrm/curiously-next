@@ -10,11 +10,7 @@ export async function GET(
   if (!username) {
     return NextResponse.json({ error: 'Missing username' }, { status: 400 });
   }
-  const session = (await auth()) as { user?: { username: string } };
 
-  if (!session?.user || session.user.username !== username) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-  }
   try {
     const user = await prisma.user.findUnique({
       where: { username: username },

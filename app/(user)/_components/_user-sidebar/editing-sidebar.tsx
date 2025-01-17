@@ -138,7 +138,7 @@ export default function EditingSidebar({ onClose, user }: EditingSidebarProps) {
       formData.append('file', selectedFile);
 
       setIsLoading(true);
-      const response = await fetch(`/api/${user.name}/update/avatar`, {
+      const response = await fetch(`/api/${user.username}/update/avatar`, {
         method: 'POST',
         body: formData,
       });

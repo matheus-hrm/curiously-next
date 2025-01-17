@@ -22,7 +22,6 @@ export async function PUT(
   }
 
   const user = session.user as { username: string };
-
   if (user.username !== username) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
@@ -30,7 +29,6 @@ export async function PUT(
   try {
     const body = await req.json();
     const validatedData = updateProfileSchema.parse(body);
-    console.log(username);
     const updatedUser = await prisma.user.update({
       where: {
         username: username,

@@ -1,6 +1,7 @@
 import { prisma } from '@/prisma/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
+import { auth } from '@/lib/auth';
 
 type CloudinaryResponse = {
   url: string;
@@ -12,8 +13,17 @@ export async function POST(
   { params }: { params: Promise<{ username: string }> },
 ) {
   const username = (await params).username;
-  
 
+  const session = await auth();
+  if (session == null) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+  }
+
+  const user = session.user as { username: string };
+  console.log(user.username, username);
+  if (user.username !== username) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+  }
   try {
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_NAME,

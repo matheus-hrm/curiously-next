@@ -13,8 +13,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
-  console.log(session.user);
-
   if (session.user.username !== username) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
