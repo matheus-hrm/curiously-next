@@ -13,9 +13,9 @@ export default function SignInForm() {
   return (
     <>
       <Card className="mt-12 max-w-md w-full flex flex-col items-center justify-center">
-        <CardTitle className="text-2xl p-2 mt-4">Login</CardTitle>
+        <CardTitle className="text-2xl p-2 mt-4">Entrar</CardTitle>
         <CardDescription className="text-sm mb-4">
-          Choose your sign-in method
+          Escolha seu método de login
         </CardDescription>
         <CardContent>
           <div className="relative my-2">
@@ -29,9 +29,9 @@ export default function SignInForm() {
       </Card>
 
       <span className="text-sm text-muted-foreground mt-4">
-        Don&apos;t have an account ?
+        Não tem uma conta?
         <span className="font-bold p-2 text-black">
-          <Link href={'/auth/signup'}>Sign Up</Link>
+          <Link href={'/auth/signup'}>Crie uma conta</Link>
         </span>
       </span>
     </>

@@ -91,7 +91,7 @@ export default function ChangeHandle({
 
     timeoutRef.current = setTimeout(() => {
       validateHandle(newHandle);
-    }, 1000);
+    }, 2000);
 
     return () => {
       if (timeoutRef.current) {
