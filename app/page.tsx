@@ -36,7 +36,7 @@ type HomeProps = {
 
 async function Home({ feed, user }: HomeProps) {
   return (
-    <div className="flex flex-col bg-gradient-to-b from-[hsl(var(--background-cream))] to-[hsl(var(--background-darker-cream))] h-screen">
+    <div className="flex flex-col bg-gradient-to-b from-[hsl(var(--background-cream))] to-[hsl(var(--background-darker-cream))] h-full ">
       <div className="flex flex-row justify-between items-center mb-24">
         <div className="">
           <MainLogo />
